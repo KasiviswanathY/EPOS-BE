@@ -1,0 +1,160 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          String   @id
+  name        String   @unique
+  description String?
+  permissions String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Users       Users[]
+}
+
+model Users {
+  id        String   @id
+  name      String
+  email     String   @unique
+  password  String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roleId String
+
+  role Role @relation(fields: [roleId], references: [id])
+}
+
+model Category {
+  id          String  @id
+  name        String  @unique
+  description String?
+  parentId    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  discount Discount? @relation(fields: [discountId], references: [id])
+
+  discountId String?
+}
+
+model Brand {
+  id          String   @id @map("brandId")
+  name        String   @unique
+  description String?
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          String  @id @map("productId")
+  name        String
+  description String?
+  costPrice   Float
+  salePrice   Float
+  unit        String
+  rating      Float?
+
+  warranty        Int?
+  manufacturer    String?
+  manufactureDate DateTime?
+  expiryDate      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  discount Discount? @relation(fields: [discountId], references: [id])
+
+  discountId String?
+
+  BarCode           BarCode[]
+  Purchase          PurchaseOrder[]
+  PurchaseOrderItem PurchaseOrderItem[]
+}
+
+model Discount {
+  id          String     @id
+  name        String
+  description String?
+  type        String
+  value       Float
+  startDate   DateTime
+  endDate     DateTime
+  status      String
+  product     Product[]
+  category    Category[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BarCode {
+  id        String @id @map("barcodeId")
+  code      String @unique
+  productId String @unique
+
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id        String   @id @map("supplierId")
+  name      String
+  contact   String?
+  email     String?
+  address   String?
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Purchase PurchaseOrder?
+}
+
+model PurchaseOrderItem {
+  id         String @id
+  purchaseId String
+  productId  String
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+
+  purchase PurchaseOrder @relation(fields: [purchaseId], references: [purchaseId])
+  product  Product       @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PurchaseOrder {
+  purchaseId          String   @id
+  purchaseOrderItemId String[]
+  supplierId          String   @unique
+  quantity            Int
+  totalPrice          Float
+  purchaseDate        DateTime
+
+  productOrderItem PurchaseOrderItem[]
+  supplier         Supplier            @relation(fields: [supplierId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+}

@@ -2,13 +2,13 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "baseUrl": "./",
     "paths": {
       "@/server/*": ["src/server/*"]
     },
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": true,
