@@ -1,0 +1,87 @@
+model Company {
+    id             String  @id @default(uuid())
+    name           String  @unique
+    email          String? @unique
+    website        String? @unique
+    displayName    String?
+    description    String?
+    taxNumber      String?
+    customCurrency String?
+    language       String? @default("en")
+
+    barCodeType       String? @default("CODE128")
+    qrCodeLink        String? @default("https://example.com/qr-code")
+    qrCodeDescription String? @default("Scan this QR code for more information")
+    refundDays        Int?    @default(7)
+
+    showTaxBreakdown       Boolean @default(false)
+    showCustomerBalance    Boolean @default(false)
+    printCustomerAddress   Boolean @default(false)
+    groupItemsByPromotions Boolean @default(false)
+    groupItemOnPrint       Boolean @default(false)
+    useProductNameOnPrint  Boolean @default(false)
+
+    customFontSize Int? @default(14)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Location Location[]
+}
+
+model DiscountReason {
+    id           String @id @default(uuid())
+    reason       String @unique
+    defaultValue Int?   @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model RefundReason {
+    id               String  @id @default(uuid())
+    description      String  @unique
+    shortDescription String
+    returnToStock    Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model NoSaleReason {
+    id     String @id @default(uuid())
+    reason String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model StockMovementReason {
+    id     String @id @default(uuid())
+    reason String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model ClockingType {
+    id            String @id @default(uuid())
+    name          String @unique
+    payMultiplier Float  @default(1.0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    StaffHours StaffHours[]
+}
+
+model CustomerType {
+    id          String  @id @default(uuid())
+    name        String  @unique
+    description String?
+    discount    Float?  @default(0.0)
+
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    Customer  Customer[]
+}

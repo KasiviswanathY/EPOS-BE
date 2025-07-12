@@ -1,0 +1,47 @@
+enum TaxType {
+    Standard
+    Combined
+}
+
+model TenderType {
+    id              String   @id @default(uuid())
+    name            String   @unique
+    description     String?
+    buttonColor     String?
+    tillOrder       String?
+    classification  String?
+    otherTenderType Boolean?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model TaxRates {
+    id          String  @id @default(uuid())
+    name        String  @unique
+    description String?
+    rate        Float
+    code        String
+    taxType     TaxType
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model PettyCash {
+    id          String  @id @default(uuid())
+    reason      String  @unique
+    description String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model PayoutReason {
+    id          String  @id @default(uuid())
+    reason      String  @unique
+    description String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

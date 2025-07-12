@@ -1,0 +1,45 @@
+model Supplier {
+    id        String   @id @default(uuid())
+    name      String
+    contact   String?
+    email     String?
+    address   String?
+    status    Status   @default(ACTIVE)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Purchase PurchaseOrder?
+}
+
+model PurchaseOrderItem {
+    id         String @id
+    purchaseId String
+    productId  String
+    quantity   Int
+    unitPrice  Float
+    totalPrice Float
+
+    purchase PurchaseOrder @relation(fields: [purchaseId], references: [purchaseId])
+    product  Product       @relation(fields: [productId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model PurchaseOrder {
+    purchaseId          String   @id @default(uuid())
+    purchaseOrderItemId String[]
+    supplierId          String   @unique
+    quantity            Int
+    totalPrice          Float
+    purchaseDate        DateTime
+
+    productOrderItem PurchaseOrderItem[]
+    supplier         Supplier            @relation(fields: [supplierId], references: [id])
+
+    Product   Product? @relation(fields: [productId], references: [id])
+    productId String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

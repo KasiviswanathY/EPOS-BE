@@ -12,7 +12,8 @@
     "prisma:format": "prisma format",
     "prisma:reset": "prisma migrate reset --force",
     "prisma:generate": "prisma generate",
-    "dev": "concurrently yarn prisma:generate tsx --watch src/server.ts"
+    "prisma:migrate": "prisma migrate dev --name init",
+    "dev": "concurrently 'yarn prisma:generate' 'tsx --watch src/server.ts'"
   },
   "author": "",
   "license": "ISC",
@@ -49,5 +50,8 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.35.1"
+  },
+  "prisma": {
+    "schema": "prisma/schema/schema.prisma"
   }
 }

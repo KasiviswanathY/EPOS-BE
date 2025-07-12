@@ -1,0 +1,63 @@
+enum Permission {
+    VIEW
+    EDIT
+    DELETE
+    CREATE
+    MANAGE
+}
+
+model Role {
+    id          String       @id @default(uuid())
+    name        String       @unique
+    type        RoleType     @default(USER)
+    description String?
+    permissions Permission[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Staff Staff[]
+}
+
+model Staff {
+    id                       String  @id @default(uuid())
+    name                     String
+    status                   Status  @default(ACTIVE)
+    availableForAllLocations Boolean @default(false)
+    passcode                 String?
+    swipeLogin               String? @unique
+    hourlyRate               Float?
+    isDeleted                Boolean @default(false)
+
+    role   Role   @relation(fields: [roleId], references: [id])
+    roleId String
+
+    mainLocation         Location @relation("mainLocation", fields: [mainLocationId], references: [id])
+    mainLocationId       String
+    addtionalLocations   Location @relation("additionalLocations", fields: [addtionalLocationIds], references: [id])
+    addtionalLocationIds String[]
+
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    StaffHours StaffHours[]
+}
+
+model StaffHours {
+    id            String       @id @default(uuid())
+    staffId       String
+    date          DateTime
+    clockingIn    DateTime?
+    clockingOut   DateTime?
+    notes         String?
+    clockingType  ClockingType @relation(fields: [clockingTypeId], references: [id])
+    clockingTypId String
+
+    location   Location @relation(fields: [locationId], references: [id])
+    locationId String
+
+    staff Staff @relation(fields: [staffId], references: [id])
+
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    clockingTypeId String
+}

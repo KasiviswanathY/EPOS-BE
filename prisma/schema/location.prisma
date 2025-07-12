@@ -1,0 +1,55 @@
+model Location {
+    id          String  @id @default(uuid())
+    name        String  @unique
+    address     String?
+    city        String?
+    country     String?
+    pincode     String?
+    description String?
+    status      Status  @default(ACTIVE)
+    email       String? @unique
+    phone       String? @unique
+    language    String? @default("en")
+    timeZone    String? @default("UTC")
+
+    company   Company @relation(fields: [companyId], references: [id])
+    companyId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Staff          Staff[]        @relation("mainLocation")
+    StaffAddtional Staff[]        @relation("additionalLocations")
+    staffId        String
+    Devices        Devices[]
+    OpeningHours   OpeningHours[]
+    StaffHours     StaffHours[]
+    Customer       Customer[]
+}
+
+model Devices {
+    id          String   @id @default(uuid())
+    name        String   @unique
+    description String?
+    type        String
+    location    Location @relation(fields: [locationId], references: [id])
+    locationId  String
+    enabled     Boolean  @default(true)
+    priceMode   String?
+    autoClose   Boolean  @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model OpeningHours {
+    id         String   @id @default(uuid())
+    day        String   @unique
+    openTime   String
+    closeTime  String
+    location   Location @relation(fields: [locationId], references: [id])
+    locationId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

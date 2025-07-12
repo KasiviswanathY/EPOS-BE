@@ -1,0 +1,74 @@
+model Category {
+    id          String  @id @default(uuid())
+    name        String  @unique
+    description String?
+    parentId    String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    discount   Discount? @relation(fields: [discountId], references: [id])
+    discountId String?
+}
+
+model Brand {
+    id          String   @id @default(uuid())
+    name        String   @unique
+    description String?
+    status      String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Product {
+    id          String  @id @default(uuid())
+    name        String
+    description String?
+    costPrice   Float
+    salePrice   Float
+    unit        String
+    rating      Float?
+
+    warranty        Int?
+    manufacturer    String?
+    manufactureDate DateTime?
+    expiryDate      DateTime?
+
+    discount   Discount? @relation(fields: [discountId], references: [id])
+    discountId String?
+
+    BarCode           BarCode[]
+    Purchase          PurchaseOrder[]
+    PurchaseOrderItem PurchaseOrderItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Discount {
+    id          String   @id @default(uuid())
+    name        String
+    description String?
+    type        String
+    value       Float
+    startDate   DateTime
+    endDate     DateTime
+    status      String
+
+    product  Product[]
+    category Category[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model BarCode {
+    id   String @id @map("barcodeId")
+    code String @unique
+
+    product   Product @relation(fields: [productId], references: [id])
+    productId String  @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

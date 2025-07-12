@@ -1,0 +1,22 @@
+model Customer {
+    id               String       @id @default(uuid())
+    firstName        String
+    lastName         String
+    bussinessName    String?
+    dob              DateTime?
+    contactNumber    String?
+    email            String?      @unique
+    address          String?
+    town             String?
+    zipCode          String?
+    type             CustomerType @relation(fields: [typeId], references: [id])
+    typeId           String
+    maxCreditLimit   Float? // Maximum credit limit for the customer
+    notes            String?
+    signUpLocation   Location     @relation(fields: [signUpLocationId], references: [id])
+    signUpLocationId String
+    status           Status       @default(ACTIVE)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
