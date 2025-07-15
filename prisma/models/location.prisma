@@ -18,13 +18,13 @@ model Location {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Staff          Staff[]        @relation("mainLocation")
-    StaffAddtional Staff[]        @relation("additionalLocations")
-    staffId        String
-    Devices        Devices[]
-    OpeningHours   OpeningHours[]
-    StaffHours     StaffHours[]
-    Customer       Customer[]
+    staffId      String
+    Devices      Devices[]
+    OpeningHours OpeningHours[]
+    StaffHours   StaffHours[]
+    Customer     Customer[]
+
+    Staff Staff[]
 }
 
 model Devices {

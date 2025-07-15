@@ -32,32 +32,29 @@ model Staff {
     role   Role   @relation(fields: [roleId], references: [id])
     roleId String
 
-    mainLocation         Location @relation("mainLocation", fields: [mainLocationId], references: [id])
-    mainLocationId       String
-    addtionalLocations   Location @relation("additionalLocations", fields: [addtionalLocationIds], references: [id])
-    addtionalLocationIds String[]
+    mainLocation   Location @relation(fields: [mainLocationId], references: [id])
+    mainLocationId String
 
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
-    StaffHours StaffHours[]
+    createdAt  DateTime    @default(now())
+    updatedAt  DateTime    @updatedAt
+    StaffHours StaffHours?
 }
 
 model StaffHours {
-    id            String       @id @default(uuid())
-    staffId       String
-    date          DateTime
-    clockingIn    DateTime?
-    clockingOut   DateTime?
-    notes         String?
-    clockingType  ClockingType @relation(fields: [clockingTypeId], references: [id])
-    clockingTypId String
+    id             String       @id @default(uuid())
+    staffId        String       @unique
+    date           DateTime
+    clockingIn     DateTime?
+    clockingOut    DateTime?
+    notes          String?
+    clockingType   ClockingType @relation(fields: [clockingTypeId], references: [id])
+    clockingTypeId String
 
     location   Location @relation(fields: [locationId], references: [id])
     locationId String
 
     staff Staff @relation(fields: [staffId], references: [id])
 
-    createdAt      DateTime @default(now())
-    updatedAt      DateTime @updatedAt
-    clockingTypeId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
