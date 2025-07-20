@@ -118,6 +118,7 @@ export const createUser = async (req: Request, res: Response) => {
         id: true,
       },
     });
+
     res.status(201).json(newUser);
   } catch (error) {
     console.error('Error creating user:', error);
