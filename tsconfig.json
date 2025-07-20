@@ -16,8 +16,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["src/types/*", "node_modules/@types"]
   },
-  "include": ["src/**/*"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
 }

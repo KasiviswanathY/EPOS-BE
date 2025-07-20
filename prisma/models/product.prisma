@@ -38,11 +38,12 @@ model Product {
     discountId String?
 
     BarCode           BarCode[]
-    Purchase          PurchaseOrder[]
+    // Purchase          PurchaseOrder[]
     PurchaseOrderItem PurchaseOrderItem[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    PurchaseOrder PurchaseOrder[]
 }
 
 model Discount {

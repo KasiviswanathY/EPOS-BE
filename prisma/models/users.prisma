@@ -1,0 +1,37 @@
+enum UserPermissionType {
+    USER_RIGHTS
+    CREATE_USER
+    VIEW_USER
+    UPDATE_USER
+    DELETE_USER
+    PRODUCT_RIGHTS
+    CREATE_PRODUCT
+    VIEW_PRODUCT
+    UPDATE_PRODUCT
+    DELETE_PRODUCT
+    PURCHASE_ORDER_RIGHTS
+    CREATE_PURCHASE_ORDER
+    VIEW_PURCHASE_ORDER
+    UPDATE_PURCHASE_ORDER
+    CANCEL_PURCHASE_ORDER
+    SETUP_RIGHTS
+    MANAGEMENT_RIGHTS
+    REPORTING_RIGHTS
+    MARGIN_RIGHTS
+    TILL_RIGHTS
+    WEB_INTEGRATION_RIGHTS
+    APPS_RIGHTS
+}
+
+model User {
+    id       String @id @default(uuid())
+    username String @unique
+    password String
+    email    String @unique
+    status   Status @default(ACTIVE)
+
+    permissions String[] @default([])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
