@@ -10,7 +10,7 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
       req.user,
-      UserPermissionType.VIEW_USER,
+      UserPermissionType.USER_RIGHTS,
     );
 
     if (!checkUserPermissions) {
@@ -43,7 +43,7 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
       req.user,
-      UserPermissionType.VIEW_USER,
+      UserPermissionType.USER_RIGHTS,
     );
 
     if (!checkUserPermissions) {
@@ -84,7 +84,7 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
       req.user,
-      UserPermissionType.CREATE_USER,
+      UserPermissionType.USER_RIGHTS,
     );
 
     if (!checkUserPermissions) {
@@ -129,7 +129,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
       req.user,
-      UserPermissionType.UPDATE_USER,
+      UserPermissionType.USER_RIGHTS,
     );
 
     if (!checkUserPermissions) {
@@ -177,7 +177,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
       req.user,
-      UserPermissionType.DELETE_USER,
+      UserPermissionType.USER_RIGHTS,
     );
 
     if (!checkUserPermissions) {
@@ -211,7 +211,7 @@ export const changePassword = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
       req.user,
-      UserPermissionType.UPDATE_USER,
+      UserPermissionType.USER_RIGHTS,
     );
     if (!checkUserPermissions) {
       res.status(403).json({

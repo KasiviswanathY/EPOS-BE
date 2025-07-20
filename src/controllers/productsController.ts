@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient'; // Adjust the import path as
+import { checkPermissions } from 'src/utils/checkPermissions';
+import { UserPermissionType } from '@prisma/client';
 
 export const getProductById = async (request: Request, response: Response) => {
   try {
-    const checkUserPermissions =
-      request.user?.permissions?.includes('READ_PRODUCT');
+    const checkUserPermissions = checkPermissions(
+      request.user,
+      UserPermissionType.PRODUCT_RIGHTS,
+    );
 
     if (!checkUserPermissions) {
       response.status(403).json({
@@ -49,8 +53,10 @@ export const getProducts = async (request: Request, response: Response) => {
 
 export const createProduct = async (request: Request, response: Response) => {
   try {
-    const checkUserPermissions =
-      request.user?.permissions?.includes('CREATE_PRODUCT');
+    const checkUserPermissions = checkPermissions(
+      request.user,
+      UserPermissionType.PRODUCT_RIGHTS,
+    );
 
     if (!checkUserPermissions) {
       response.status(403).json({
