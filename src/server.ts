@@ -9,6 +9,9 @@ import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import loginRoutes from './routes/loginRoutes';
 
+import { errorHandler } from './handlers/errorHandler';
+import { authHandler } from './handlers/authHandler';
+
 dotenv.config();
 
 const app = express();
@@ -22,21 +25,24 @@ app.use(cors());
 app.use(morgan('common'));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static('public'));
 
 const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+app.use('/api/v1/', loginRoutes);
+
+app.use(authHandler);
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
 });
 
-app.use('/api/v1/login', loginRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', productRoutes);
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
