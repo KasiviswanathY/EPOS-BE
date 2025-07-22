@@ -14,10 +14,11 @@ export const getUsers = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      res.status(403).json({
-        error: 'Forbidden: You do not have permission to access this resource.',
-      });
-      return;
+      const err: any = new Error(
+        'You do not have permission to access this resource.',
+      );
+      err.status = 403;
+      throw err;
     }
 
     const users = await prisma.user.findMany({
@@ -33,9 +34,11 @@ export const getUsers = async (req: Request, res: Response) => {
     });
 
     res.status(200).json(users);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || 'Internal Server Error' });
   }
 };
 
@@ -47,10 +50,11 @@ export const getUserById = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      res.status(403).json({
-        error: 'Forbidden: You do not have permission to access this resource.',
-      });
-      return;
+      const err: any = new Error(
+        'You do not have permission to access this resource.',
+      );
+      err.status = 403;
+      throw err;
     }
 
     const { id } = req.params;
@@ -70,13 +74,17 @@ export const getUserById = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      const err: any = new Error('User not found');
+      err.status = 404;
+      throw err;
     }
 
     res.status(200).json(user);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || 'Internal Server Error' });
   }
 };
 
@@ -88,10 +96,11 @@ export const createUser = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      res.status(403).json({
-        error: 'Forbidden: You do not have permission to access this resource.',
-      });
-      return;
+      const err: any = new Error(
+        'You do not have permission to access this resource.',
+      );
+      err.status = 403;
+      throw err;
     }
 
     const { username, email, password, status, permissions } = req.body;
@@ -120,9 +129,11 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     res.status(201).json(newUser);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || 'Internal Server Error' });
   }
 };
 
@@ -134,9 +145,11 @@ export const updateUser = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      return res.status(403).json({
-        error: 'Forbidden: You do not have permission to access this resource.',
-      });
+      const err: any = new Error(
+        'You do not have permission to access this resource.',
+      );
+      err.status = 403;
+      throw err;
     }
 
     const { id } = req.params;
@@ -147,7 +160,9 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      const err: any = new Error('User not found');
+      err.status = 404;
+      throw err;
     }
 
     const updatedData: any = {
@@ -168,9 +183,11 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     res.status(200).json(updatedUser);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || 'Internal Server Error' });
   }
 };
 
@@ -182,9 +199,11 @@ export const deleteUser = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      return res.status(403).json({
-        error: 'Forbidden: You do not have permission to access this resource.',
-      });
+      const err: any = new Error(
+        'You do not have permission to access this resource.',
+      );
+      err.status = 403;
+      throw err;
     }
 
     const { id } = req.params;
@@ -194,7 +213,9 @@ export const deleteUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      const err: any = new Error('User not found');
+      err.status = 404;
+      throw err;
     }
 
     await prisma.user.delete({
@@ -202,9 +223,11 @@ export const deleteUser = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({ message: 'User deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || 'Internal Server Error' });
   }
 };
 
@@ -215,10 +238,11 @@ export const changePassword = async (req: Request, res: Response) => {
       UserPermissionType.USER_RIGHTS,
     );
     if (!checkUserPermissions) {
-      res.status(403).json({
-        error: 'Forbidden: You do not have permission to access this resource.',
-      });
-      return;
+      const err: any = new Error(
+        'You do not have permission to access this resource.',
+      );
+      err.status = 403;
+      throw err;
     }
 
     const { username, oldPassword, newPassword } = req.body;
@@ -227,13 +251,17 @@ export const changePassword = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      const err: any = new Error('User not found');
+      err.status = 404;
+      throw err;
     }
 
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
 
     if (!isPasswordValid) {
-      throw new Error('Invalid old password');
+      const err: any = new Error('Invalid old password');
+      err.status = 400;
+      throw err;
     }
 
     const salt = await generateSalt();
@@ -252,10 +280,10 @@ export const changePassword = async (req: Request, res: Response) => {
         email: updatedUser.email,
       },
     });
-  } catch (error: Error | any) {
+  } catch (error: any) {
     console.error('Error changing password:', error);
     return res
-      .status(500)
+      .status(error.status || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };

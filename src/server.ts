@@ -8,13 +8,18 @@ import bodyParser from 'body-parser';
 import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import loginRoutes from './routes/loginRoutes';
+import miscRoutes from './routes/miscRoutes';
 
 import { errorHandler } from './handlers/errorHandler';
 import { authHandler } from './handlers/authHandler';
 
+import swaggerDocs from './utils/swagger';
+
 dotenv.config();
 
 const app = express();
+
+swaggerDocs(app);
 
 app.use(express.json());
 
@@ -35,12 +40,9 @@ app.use('/api/v1/', loginRoutes);
 
 app.use(authHandler);
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
-});
-
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/misc', miscRoutes);
 
 app.use(errorHandler);
 
