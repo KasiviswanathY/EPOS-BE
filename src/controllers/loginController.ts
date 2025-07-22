@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { prisma } from 'src/primsaClient';
 import { generateAccessToken } from 'src/utils/generateAccessToken';
+import { ApiError } from 'src/types/Error';
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
@@ -21,21 +22,18 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     if (!user) {
-      res.status(404).json({ error: 'User not found' });
-      return;
+      throw new ApiError('User not found', 404);
     }
 
     if (!user.password) {
-      res.status(400).json({ error: 'User does not have privileges to login' });
-      return;
+      throw new ApiError('User does not have privileges to login', 403);
     }
 
     const isPasswordValid =
       user && (await bcrypt.compare(password, user.password));
 
     if (!isPasswordValid) {
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
+      throw new ApiError('Invalid credentials', 401);
     }
 
     const token = generateAccessToken(user.id);
@@ -43,9 +41,11 @@ export const loginUser = async (req: Request, res: Response) => {
     res.status(200).json({
       token,
     });
-  } catch (error) {
+  } catch (error: ApiError | any) {
     console.error('Error during login:', error);
-    res.status(500).json({ error: 'Login Failed' });
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Login Failed' });
   }
 };
 
@@ -68,9 +68,9 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     if (existingUser) {
-      res.status(400).json({ error: 'User already exists' });
-      return;
+      throw new ApiError('User already exists', 400);
     }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await prisma.user.create({
@@ -89,8 +89,10 @@ export const registerUser = async (req: Request, res: Response) => {
       },
     });
     res.status(201).json({ user: newUser });
-  } catch (error) {
+  } catch (error: ApiError | any) {
     console.error('Error during registration:', error);
-    res.status(500).json({ error: 'Registration Failed' });
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Registration Failed' });
   }
 };
