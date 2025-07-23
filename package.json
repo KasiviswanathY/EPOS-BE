@@ -4,7 +4,7 @@
   "description": "Node js backend",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && npx prisma migrate deploy && npx tsc",
+    "build": "yarn && rimraf dist && npx prisma migrate deploy && npx tsc",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
