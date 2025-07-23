@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   createProduct,
   getProductById,
-} from 'src/controllers/productsController';
+} from '../controllers/productsController';
 
 const router = Router();
 

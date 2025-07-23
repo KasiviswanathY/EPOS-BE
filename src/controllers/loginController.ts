@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { prisma } from 'src/primsaClient';
-import { generateAccessToken } from 'src/utils/generateAccessToken';
-import { ApiError } from 'src/types/Error';
+import { prisma } from '../primsaClient';
+import { generateAccessToken } from '../utils/generateAccessToken';
+import { ApiError } from '../types/Error';
 
 export const loginUser = async (req: Request, res: Response) => {
   try {

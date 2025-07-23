@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { generateSalt } from 'src/utils/generateSalt';
+import { generateSalt } from '../utils/generateSalt';
 import bcrypt from 'bcrypt';
-import { prisma } from 'src/primsaClient';
+import { prisma } from '../primsaClient';
 import { Status, UserPermissionType } from '@prisma/client';
 
-import { checkPermissions } from 'src/utils/checkPermissions';
+import { checkPermissions } from '../utils/checkPermissions';
 
 export const getUsers = async (req: Request, res: Response) => {
   try {

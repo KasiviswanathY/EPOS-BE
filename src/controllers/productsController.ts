@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient'; // Adjust the import path as
-import { checkPermissions } from 'src/utils/checkPermissions';
+import { checkPermissions } from '../utils/checkPermissions';
 import { UserPermissionType } from '@prisma/client';
 
 export const getProductById = async (request: Request, response: Response) => {
