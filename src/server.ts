@@ -15,6 +15,7 @@ import { errorHandler } from './handlers/errorHandler';
 import { authHandler } from './handlers/authHandler';
 
 import swaggerDocs from './utils/swagger';
+import { config } from './config';
 
 dotenv.config();
 
@@ -35,8 +36,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-const port = process.env.PORT || 3000;
-
 app.use('/api/v1/', loginRoutes);
 
 app.use(authHandler);
@@ -48,6 +47,6 @@ app.use('/api/v1/misc', miscRoutes);
 
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(config.port, () => {
+  console.log(`Server is running on ${config.serverUrl}`);
 });

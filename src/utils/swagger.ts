@@ -2,6 +2,7 @@ import { version } from '../../package.json';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { Express, Request, Response } from 'express';
+import { config } from '../config';
 
 const options: swaggerJsDoc.Options = {
   definition: {
@@ -27,7 +28,7 @@ const options: swaggerJsDoc.Options = {
     ],
     servers: [
       {
-        url: 'http://localhost:4000/api/v1',
+        url: `${config.serverUrl}/api/v1`,
       },
     ],
   },
@@ -45,7 +46,7 @@ function swaggerDocs(app: Express) {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });
-  console.log(`Swagger docs available at http://localhost:4000/api-docs`);
+  console.log(`Swagger docs available at ${config.serverUrl}/api-docs`);
 }
 
 export default swaggerDocs;

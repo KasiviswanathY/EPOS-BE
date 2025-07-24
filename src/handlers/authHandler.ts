@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../primsaClient';
 import { ApiError } from '../types/Error';
+import { config } from '../config';
 
 export const authHandler = async (
   req: Request,
@@ -27,10 +28,9 @@ export const authHandler = async (
       });
     }
 
-    const decodedToken = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string,
-    ) as { userId: string };
+    const decodedToken = jwt.verify(token, config.jwtSecret as string) as {
+      userId: string;
+    };
 
     const user = await prisma.user.findUnique({
       where: { id: decodedToken.userId },
