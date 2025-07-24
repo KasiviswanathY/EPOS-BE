@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import loginRoutes from './routes/loginRoutes';
 import miscRoutes from './routes/miscRoutes';
+import companyRoutes from './routes/companyRoutes';
 
 import { errorHandler } from './handlers/errorHandler';
 import { authHandler } from './handlers/authHandler';
@@ -42,6 +43,7 @@ app.use(authHandler);
 
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/misc', miscRoutes);
 
 app.use(errorHandler);
