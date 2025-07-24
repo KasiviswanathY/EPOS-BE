@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { prisma } from 'src/primsaClient';
+import { prisma } from '../primsaClient';
 
 export const getRoles = async (request: Request, response: Response) => {
   try {

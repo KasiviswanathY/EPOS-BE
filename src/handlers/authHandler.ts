@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../primsaClient';
-import { ApiError } from 'src/types/Error';
+import { ApiError } from '../types/Error';
 
 export const authHandler = async (
   req: Request,

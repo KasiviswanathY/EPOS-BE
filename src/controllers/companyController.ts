@@ -1,9 +1,9 @@
 import { UserPermissionType } from '@prisma/client';
 import { Request, Response } from 'express';
-import { prisma } from 'src/primsaClient';
-import { ApiError } from 'src/types/Error';
-import { UnauthorizedError } from 'src/types/UnauthorizedError';
-import { checkPermissions } from 'src/utils/checkPermissions';
+import { prisma } from '../primsaClient';
+import { ApiError } from '../types/Error';
+import { UnauthorizedError } from '../types/UnauthorizedError';
+import { checkPermissions } from '../utils/checkPermissions';
 
 export const createCompany = async (req: Request, res: Response) => {
   try {

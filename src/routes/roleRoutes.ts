@@ -5,7 +5,7 @@ import {
   getAllRoles,
   getRoleById,
   updateRole,
-} from 'src/controllers/roleController';
+} from '../controllers/roleController';
 
 const router = Router();
 

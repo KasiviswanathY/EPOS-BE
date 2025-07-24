@@ -5,8 +5,8 @@ import { prisma } from '../primsaClient';
 import { Status, UserPermissionType } from '@prisma/client';
 
 import { checkPermissions } from '../utils/checkPermissions';
-import { ApiError } from 'src/types/Error';
-import { UnauthorizedError } from 'src/types/UnauthorizedError';
+import { ApiError } from '../types/Error';
+import { UnauthorizedError } from '../types/UnauthorizedError';
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
