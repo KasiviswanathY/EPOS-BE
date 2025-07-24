@@ -5,6 +5,8 @@ import { prisma } from '../primsaClient';
 import { Status, UserPermissionType } from '@prisma/client';
 
 import { checkPermissions } from '../utils/checkPermissions';
+import { ApiError } from 'src/types/Error';
+import { UnauthorizedError } from 'src/types/UnauthorizedError';
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -14,11 +16,7 @@ export const getUsers = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      const err: any = new Error(
-        'You do not have permission to access this resource.',
-      );
-      err.status = 403;
-      throw err;
+      throw new UnauthorizedError();
     }
 
     const users = await prisma.user.findMany({
@@ -37,7 +35,7 @@ export const getUsers = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error fetching users:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -50,11 +48,7 @@ export const getUserById = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      const err: any = new Error(
-        'You do not have permission to access this resource.',
-      );
-      err.status = 403;
-      throw err;
+      throw new UnauthorizedError();
     }
 
     const { id } = req.params;
@@ -74,16 +68,17 @@ export const getUserById = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      const err: any = new Error('User not found');
-      err.status = 404;
-      throw err;
+      throw new ApiError({
+        message: 'User not found',
+        statusCode: 404,
+      });
     }
 
     res.status(200).json(user);
   } catch (error: any) {
     console.error('Error fetching user:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -96,11 +91,7 @@ export const createUser = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      const err: any = new Error(
-        'You do not have permission to access this resource.',
-      );
-      err.status = 403;
-      throw err;
+      throw new UnauthorizedError();
     }
 
     const { username, email, password, status, permissions } = req.body;
@@ -132,7 +123,7 @@ export const createUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error creating user:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -145,11 +136,7 @@ export const updateUser = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      const err: any = new Error(
-        'You do not have permission to access this resource.',
-      );
-      err.status = 403;
-      throw err;
+      throw new UnauthorizedError();
     }
 
     const { id } = req.params;
@@ -160,9 +147,10 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      const err: any = new Error('User not found');
-      err.status = 404;
-      throw err;
+      throw new ApiError({
+        message: 'User not found',
+        statusCode: 404,
+      });
     }
 
     const updatedData: any = {
@@ -186,7 +174,7 @@ export const updateUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error updating user:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -199,11 +187,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     );
 
     if (!checkUserPermissions) {
-      const err: any = new Error(
-        'You do not have permission to access this resource.',
-      );
-      err.status = 403;
-      throw err;
+      throw new UnauthorizedError();
     }
 
     const { id } = req.params;
@@ -213,9 +197,10 @@ export const deleteUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      const err: any = new Error('User not found');
-      err.status = 404;
-      throw err;
+      throw new ApiError({
+        message: 'User not found',
+        statusCode: 404,
+      });
     }
 
     await prisma.user.delete({
@@ -226,7 +211,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error deleting user:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -238,11 +223,7 @@ export const changePassword = async (req: Request, res: Response) => {
       UserPermissionType.USER_RIGHTS,
     );
     if (!checkUserPermissions) {
-      const err: any = new Error(
-        'You do not have permission to access this resource.',
-      );
-      err.status = 403;
-      throw err;
+      throw new UnauthorizedError();
     }
 
     const { username, oldPassword, newPassword } = req.body;
@@ -251,17 +232,19 @@ export const changePassword = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      const err: any = new Error('User not found');
-      err.status = 404;
-      throw err;
+      throw new ApiError({
+        message: 'User not found',
+        statusCode: 404,
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
 
     if (!isPasswordValid) {
-      const err: any = new Error('Invalid old password');
-      err.status = 400;
-      throw err;
+      throw new ApiError({
+        message: 'Invalid old password',
+        statusCode: 400,
+      });
     }
 
     const salt = await generateSalt();
@@ -283,7 +266,7 @@ export const changePassword = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error changing password:', error);
     return res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };

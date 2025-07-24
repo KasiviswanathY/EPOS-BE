@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../primsaClient';
+import { ApiError } from 'src/types/Error';
 
 export const authHandler = async (
   req: Request,
@@ -11,15 +12,19 @@ export const authHandler = async (
     const authHeader = req.header('authorization') as string | undefined;
 
     if (!authHeader) {
-      throw new Error(
-        'Authentication Failed. No authorization header provided',
-      );
+      throw new ApiError({
+        message: 'Authentication Failed. No authorization header provided',
+        statusCode: 401,
+      });
     }
 
     const token = authHeader.split(' ')[1];
 
     if (!token) {
-      throw new Error('Authentication Failed. No token provided');
+      throw new ApiError({
+        message: 'Authentication Failed. No token provided',
+        statusCode: 401,
+      });
     }
 
     const decodedToken = jwt.verify(

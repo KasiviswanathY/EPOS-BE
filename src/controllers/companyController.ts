@@ -2,6 +2,7 @@ import { UserPermissionType } from '@prisma/client';
 import { Request, Response } from 'express';
 import { prisma } from 'src/primsaClient';
 import { ApiError } from 'src/types/Error';
+import { UnauthorizedError } from 'src/types/UnauthorizedError';
 import { checkPermissions } from 'src/utils/checkPermissions';
 
 export const createCompany = async (req: Request, res: Response) => {
@@ -12,10 +13,7 @@ export const createCompany = async (req: Request, res: Response) => {
     );
 
     if (!hasPermission) {
-      throw new ApiError(
-        'You do not have permission to create a Company.',
-        403,
-      );
+      throw new UnauthorizedError();
     }
 
     const newCompany = await prisma.company.create({
@@ -26,7 +24,7 @@ export const createCompany = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error creating product:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -39,7 +37,7 @@ export const getCompanies = async (req: Request, res: Response) => {
     );
 
     if (!hasPermission) {
-      throw new ApiError('You do not have permission to view companies.', 403);
+      throw new UnauthorizedError();
     }
 
     const companies = await prisma.company.findMany();
@@ -47,7 +45,7 @@ export const getCompanies = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error fetching companies:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -60,10 +58,7 @@ export const getCompanyById = async (req: Request, res: Response) => {
     );
 
     if (!hasPermission) {
-      throw new ApiError(
-        'You do not have permission to view this company.',
-        403,
-      );
+      throw new UnauthorizedError();
     }
 
     const { id } = req.params;
@@ -72,14 +67,17 @@ export const getCompanyById = async (req: Request, res: Response) => {
     });
 
     if (!company) {
-      throw new ApiError('Company not found', 404);
+      throw new ApiError({
+        message: 'Company not found',
+        statusCode: 404,
+      });
     }
 
     res.status(200).json(company);
   } catch (error: any) {
     console.error('Error fetching company:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -92,10 +90,7 @@ export const updateCompany = async (req: Request, res: Response) => {
     );
 
     if (!hasPermission) {
-      throw new ApiError(
-        'You do not have permission to update this company.',
-        403,
-      );
+      throw new UnauthorizedError();
     }
 
     const { id } = req.params;
@@ -108,7 +103,7 @@ export const updateCompany = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error updating company:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };
@@ -121,10 +116,7 @@ export const deleteCompany = async (req: Request, res: Response) => {
     );
 
     if (!hasPermission) {
-      throw new ApiError(
-        'You do not have permission to delete this company.',
-        403,
-      );
+      throw new UnauthorizedError();
     }
 
     const { id } = req.params;
@@ -136,7 +128,7 @@ export const deleteCompany = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error deleting company:', error);
     res
-      .status(error.status || 500)
+      .status(error.statusCode || 500)
       .json({ error: error.message || 'Internal Server Error' });
   }
 };

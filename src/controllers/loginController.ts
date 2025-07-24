@@ -22,18 +22,21 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     if (!user) {
-      throw new ApiError('User not found', 404);
+      throw new ApiError({ message: 'User not found', statusCode: 404 });
     }
 
     if (!user.password) {
-      throw new ApiError('User does not have privileges to login', 403);
+      throw new ApiError({
+        message: 'User does not have privileges to login',
+        statusCode: 403,
+      });
     }
 
     const isPasswordValid =
       user && (await bcrypt.compare(password, user.password));
 
     if (!isPasswordValid) {
-      throw new ApiError('Invalid credentials', 401);
+      throw new ApiError({ message: 'Invalid credentials', statusCode: 401 });
     }
 
     const token = generateAccessToken(user.id);
@@ -68,7 +71,7 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     if (existingUser) {
-      throw new ApiError('User already exists', 400);
+      throw new ApiError({ message: 'User already exists', statusCode: 400 });
     }
 
     const salt = await bcrypt.genSalt(10);
