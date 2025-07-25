@@ -16,6 +16,15 @@ export const createCompany = async (req: Request, res: Response) => {
       throw new UnauthorizedError();
     }
 
+    const { name } = req.body;
+
+    if (!name) {
+      throw new ApiError({
+        message: 'Name is mandatory for Company',
+        statusCode: 400,
+      });
+    }
+
     const newCompany = await prisma.company.create({
       data: req.body,
     });

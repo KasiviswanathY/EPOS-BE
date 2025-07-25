@@ -9,24 +9,11 @@ model Company {
     customCurrency String?
     language       String? @default("en")
 
-    barCodeType       String? @default("CODE128")
-    qrCodeLink        String? @default("https://example.com/qr-code")
-    qrCodeDescription String? @default("Scan this QR code for more information")
-    refundDays        Int?    @default(7)
-
-    showTaxBreakdown       Boolean @default(false)
-    showCustomerBalance    Boolean @default(false)
-    printCustomerAddress   Boolean @default(false)
-    groupItemsByPromotions Boolean @default(false)
-    groupItemOnPrint       Boolean @default(false)
-    useProductNameOnPrint  Boolean @default(false)
-
-    customFontSize Int? @default(14)
-
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Location Location[]
+    Location       Location[]
+    CompanyReceipt CompanyReceipt?
 }
 
 model DiscountReason {
@@ -84,4 +71,37 @@ model CustomerType {
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
     Customer  Customer[]
+}
+
+model CompanyReceipt {
+    id          String  @id @default(uuid())
+    name        String
+    displayName String?
+    taxNumber   String?
+    email       String?
+    website     String?
+    refundDays  Int?    @default(7)
+    message     String?
+
+    showTaxBreakdown       Boolean? @default(false)
+    sendEmailReceipt       Boolean? @default(false)
+    showCustomerBalance    Boolean? @default(false)
+    printCustomerAddress   Boolean? @default(false)
+    showItemNodes          Boolean? @default(false)
+    groupItemsByPromotions Boolean? @default(false)
+    groupItemOnPrint       Boolean? @default(false)
+    useProductNameOnPrint  Boolean? @default(false)
+    showBarCode            Boolean? @default(false)
+    showProductName        Boolean? @default(false)
+    showProductDescription Boolean? @default(false)
+    customFontSize         Int?     @default(14)
+
+    barCodeType       String? @default("CODE128")
+    qrCodeLink        String? @default("https://example.com/qr-code")
+    qrCodeDescription String? @default("Scan this QR code for more information")
+
+    guid Int?
+
+    Company   Company @relation(fields: [companyId], references: [id])
+    companyId String  @unique
 }
