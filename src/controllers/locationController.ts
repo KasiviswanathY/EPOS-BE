@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient';
-import { checkPermissions } from 'src/utils/checkPermissions';
+import { checkPermissions } from '../utils/checkPermissions';
 import { UserPermissionType } from '@prisma/client';
-import { UnauthorizedError } from 'src/types/UnauthorizedError';
-import { ApiError } from 'src/types/Error';
+import { UnauthorizedError } from '../types/UnauthorizedError';
+import { ApiError } from '../types/Error';
 
 export const createLocation = async (req: Request, res: Response) => {
   try {
@@ -181,11 +181,9 @@ export const getLocationsByCompanyId = async (req: Request, res: Response) => {
     res.status(200).json(locations);
   } catch (error: ApiError | any) {
     console.error('Error fetching locations by company ID:', error);
-    res
-      .status(error.statusCode || 500)
-      .json({
-        error: error.message || 'Failed to fetch locations by company ID',
-      });
+    res.status(error.statusCode || 500).json({
+      error: error.message || 'Failed to fetch locations by company ID',
+    });
   }
 };
 

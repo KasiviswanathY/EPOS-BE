@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient';
-import { checkPermissions } from 'src/utils/checkPermissions';
+import { checkPermissions } from '../utils/checkPermissions';
 import { UserPermissionType } from '@prisma/client';
-import { UnauthorizedError } from 'src/types/UnauthorizedError';
-import { ApiError } from 'src/types/Error';
+import { UnauthorizedError } from '../types/UnauthorizedError';
+import { ApiError } from '../types/Error';
 
 export const createDiscountReason = async (req: Request, res: Response) => {
   try {
