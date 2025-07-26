@@ -25,7 +25,7 @@ model Company {
 model DiscountReason {
     id           String @id @default(uuid())
     reason       String @unique
-    defaultValue Int?   @default(0)
+    defaultValue Float? @default(0.0)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
