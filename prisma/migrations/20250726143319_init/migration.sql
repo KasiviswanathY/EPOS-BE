@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "DiscountReason" ALTER COLUMN "defaultValue" SET DEFAULT 0.0,
+ALTER COLUMN "defaultValue" SET DATA TYPE DOUBLE PRECISION;
