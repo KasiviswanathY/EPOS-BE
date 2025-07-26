@@ -258,6 +258,8 @@ router.post('/', createUser);
  *                 type: array
  *                 items:
  *                   type: string
+ *                   enum: [USER_RIGHTS, PRODUCT_RIGHTS, PURCHASE_ORDER_RIGHTS, CREATE_PURCHASE_ORDER, VIEW_PURCHASE_ORDER, UPDATE_PURCHASE_ORDER, CANCEL_PURCHASE_ORDER, SETUP_RIGHTS, MANAGEMENT_RIGHTS, REPORTING_RIGHTS, MARGIN_RIGHTS, TILL_RIGHTS, WEB_INTEGRATION_RIGHTS, APPS_RIGHTS]
+ *                 example: ["USER_RIGHTS", "PRODUCT_RIGHTS"]
  *     responses:
  *       200:
  *         description: User updated successfully
