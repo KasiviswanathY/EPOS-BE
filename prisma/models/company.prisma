@@ -1,13 +1,19 @@
 model Company {
     id             String  @id @default(uuid())
     name           String  @unique
-    email          String? @unique
-    website        String? @unique
-    displayName    String?
-    description    String?
     taxNumber      String?
     customCurrency String?
     language       String? @default("en")
+
+    updateCostPriceOnMasterUpdate Boolean @default(false)
+    explicitConsent               Boolean @default(false)
+    eraseCustomerData             Boolean @default(false)
+    runReportsOnPageLoad          Boolean @default(false)
+    showIncExTaxOption            Boolean @default(false)
+
+    maxNoOfDevices            Int?    @default(1)
+    maxNoOfLocations          Int?    @default(1)
+    showInstructionsOnStartup Boolean @default(false)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
