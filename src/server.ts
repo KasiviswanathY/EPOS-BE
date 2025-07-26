@@ -11,6 +11,7 @@ import loginRoutes from './routes/loginRoutes';
 import miscRoutes from './routes/miscRoutes';
 import companyRoutes from './routes/companyRoutes';
 import companyReceiptRoutes from './routes/companyReceiptRoutes';
+import locationRoutes from './routes/locationRoutes';
 
 import { errorHandler } from './handlers/errorHandler';
 import { authHandler } from './handlers/authHandler';
@@ -45,6 +46,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/company-receipts', companyReceiptRoutes);
+app.use('/api/v1/locations', locationRoutes);
 app.use('/api/v1/misc', miscRoutes);
 
 app.use(errorHandler);
