@@ -19,6 +19,8 @@ import noSaleReasonRoutes from './routes/noSaleReasonRoutes';
 import stockMovementReasonRoutes from './routes/stockMovementReasonRoutes';
 import customerTypeRoutes from './routes/customerTypeRoutes';
 
+import devicesRoutes from './routes/devicesRoutes';
+
 import { errorHandler } from './handlers/errorHandler';
 import { authHandler } from './handlers/authHandler';
 
@@ -55,13 +57,16 @@ app.use('/api/v1/products', productRoutes);
 // Company related routes
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/company-receipts', companyReceiptRoutes);
-app.use('/api/v1/locations', locationRoutes);
 app.use('/api/v1/discount-reasons', discountReasonRoutes);
 app.use('/api/v1/refund-reasons', refundReasonRoutes);
 app.use('/api/v1/no-sale-reasons', noSaleReasonRoutes);
 app.use('/api/v1/stock-movement-reasons', stockMovementReasonRoutes);
 app.use('/api/v1/clocking-types', clockingTypeRoutes);
 app.use('/api/v1/customer-types', customerTypeRoutes);
+
+// Location and Devices related routes
+app.use('/api/v1/locations', locationRoutes);
+app.use('/api/v1/devices', devicesRoutes);
 
 app.use('/api/v1/misc', miscRoutes);
 
