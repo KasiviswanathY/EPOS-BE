@@ -1,6 +1,9 @@
-import { User } from '@prisma/client';
+import { User, UserPermissionType } from '@prisma/client';
 
-export const checkPermissions = (user?: User, permission?: string) => {
+export const checkPermissions = (
+  user?: User,
+  permission?: UserPermissionType,
+) => {
   if (!user || !user.permissions || !permission) {
     return false;
   }
