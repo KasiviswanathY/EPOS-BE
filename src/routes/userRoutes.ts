@@ -22,26 +22,9 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                   username:
- *                     type: string
- *                   email:
- *                     type: string
- *                   status:
- *                     type: string
- *                   createdAt:
- *                     type: string
- *                     format: date-time
- *                   updatedAt:
- *                     type: string
- *                     format: date-time
- *                   permissions:
- *                     type: string
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/User'
  *       403:
  *         description: Forbidden
  *         content:
@@ -94,24 +77,7 @@ router.get('/', getUsers);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                 username:
- *                   type: string
- *                 email:
- *                   type: string
- *                 status:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *                 updatedAt:
- *                   type: string
- *                   format: date-time
- *                 permissions:
- *                   type: string
+*               $ref: '#/components/schemas/User'
  *       403:
  *         description: Forbidden
  *         content:
@@ -157,42 +123,14 @@ router.get('/:id', getUserById);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               status:
- *                 type: string
- *               permissions:
- *                 type: string
+*             $ref: '#/components/schemas/CreateUser'
  *     responses:
  *       201:
  *         description: User created successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                 username:
- *                   type: string
- *                 email:
- *                   type: string
- *                 status:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *                 updatedAt:
- *                   type: string
- *                   format: date-time
- *                 permissions:
- *                   type: string
+*               $ref: '#/components/schemas/User'
  *       403:
  *         description: Forbidden
  *         content:
@@ -244,48 +182,14 @@ router.post('/', createUser);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               status:
- *                 type: string
- *               permissions:
- *                 type: array
- *                 items:
- *                   type: string
- *                   enum: [USER_RIGHTS, PRODUCT_RIGHTS, PURCHASE_ORDER_RIGHTS, CREATE_PURCHASE_ORDER, VIEW_PURCHASE_ORDER, UPDATE_PURCHASE_ORDER, CANCEL_PURCHASE_ORDER, SETUP_RIGHTS, MANAGEMENT_RIGHTS, REPORTING_RIGHTS, MARGIN_RIGHTS, TILL_RIGHTS, WEB_INTEGRATION_RIGHTS, APPS_RIGHTS]
- *                 example: ["USER_RIGHTS", "PRODUCT_RIGHTS"]
+*             $ref: '#/components/schemas/UpdateUser'
  *     responses:
  *       200:
  *         description: User updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                 username:
- *                   type: string
- *                 email:
- *                   type: string
- *                 status:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *                 updatedAt:
- *                   type: string
- *                   format: date-time
- *                 permissions:
- *                   type: array
- *                   items:
- *                     type: string
+*               $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid old password
  *         content:

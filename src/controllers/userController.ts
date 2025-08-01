@@ -8,6 +8,13 @@ import { checkPermissions } from '../utils/checkPermissions';
 import { ApiError } from '../types/Error';
 import { UnauthorizedError } from '../types/UnauthorizedError';
 
+const validateUserPermissions = (permissions: string[]) =>
+  permissions.every((permission: string) =>
+    Object.values(UserPermissionType).includes(
+      permission as UserPermissionType,
+    ),
+  );
+
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
@@ -96,16 +103,44 @@ export const createUser = async (req: Request, res: Response) => {
 
     const { username, email, password, status, permissions } = req.body;
 
+    if (!username && !email) {
+      throw new ApiError({
+        message: 'Username or email are required',
+        statusCode: 400,
+      });
+    }
+
+    if (!password) {
+      throw new ApiError({
+        message: 'Password is required',
+        statusCode: 400,
+      });
+    }
+
     const salt = await generateSalt();
 
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    if (permissions && !Array.isArray(permissions)) {
+      throw new ApiError({
+        message: 'Invalid permissions format',
+        statusCode: 400,
+      });
+    }
+
+    if (!validateUserPermissions(permissions)) {
+      throw new ApiError({
+        message: 'Invalid permissions',
+        statusCode: 400,
+      });
+    }
+
     const newUser = await prisma.user.create({
       data: {
-        username,
-        email,
+        username: username,
+        email: email,
         password: hashedPassword,
-        status: status || Status.ACTIVE,
+        status: Object.values(Status).includes(status) ? status : Status.ACTIVE,
         permissions,
       },
       select: {
@@ -163,6 +198,20 @@ export const updateUser = async (req: Request, res: Response) => {
     if (password) {
       const salt = await generateSalt();
       updatedData.password = await bcrypt.hash(password, salt);
+    }
+
+    if (permissions && !Array.isArray(permissions)) {
+      throw new ApiError({
+        message: 'Invalid permissions format',
+        statusCode: 400,
+      });
+    }
+
+    if (!validateUserPermissions(permissions)) {
+      throw new ApiError({
+        message: 'Invalid permissions',
+        statusCode: 400,
+      });
     }
 
     const updatedUser = await prisma.user.update({

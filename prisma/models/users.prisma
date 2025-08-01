@@ -16,14 +16,12 @@ enum UserPermissionType {
 }
 
 model User {
-    id       String @id @default(uuid())
-    username String @unique
-    password String
-    email    String @unique
-    status   Status @default(ACTIVE)
-
-    permissions String[] @default([])
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id          String               @id @default(uuid())
+    username    String?              @unique
+    password    String
+    email       String?              @unique
+    status      Status               @default(ACTIVE)
+    permissions UserPermissionType[] @default([])
+    createdAt   DateTime             @default(now())
+    updatedAt   DateTime             @updatedAt
 }
