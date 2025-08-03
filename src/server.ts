@@ -18,7 +18,7 @@ import clockingTypeRoutes from './routes/clockingTypeRoutes';
 import noSaleReasonRoutes from './routes/noSaleReasonRoutes';
 import stockMovementReasonRoutes from './routes/stockMovementReasonRoutes';
 import customerTypeRoutes from './routes/customerTypeRoutes';
-
+import staffRoutes from './routes/staffRoutes';
 import devicesRoutes from './routes/devicesRoutes';
 
 import openingHoursRoutes from './routes/openingHoursRoutes';
@@ -73,6 +73,7 @@ app.use('/api/v1/locations', locationRoutes);
 app.use('/api/v1/devices', devicesRoutes);
 app.use('/api/v1/opening-hours', openingHoursRoutes);
 
+app.use('/api/v1/staff', staffRoutes);
 app.use('/api/v1/roles', roleRoutes);
 
 app.use('/api/v1/misc', miscRoutes);
