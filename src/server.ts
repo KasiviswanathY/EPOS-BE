@@ -23,6 +23,8 @@ import devicesRoutes from './routes/devicesRoutes';
 
 import openingHoursRoutes from './routes/openingHoursRoutes';
 
+import roleRoutes from './routes/roleRoutes';
+
 import { errorHandler } from './handlers/errorHandler';
 import { authHandler } from './handlers/authHandler';
 
@@ -70,6 +72,8 @@ app.use('/api/v1/customer-types', customerTypeRoutes);
 app.use('/api/v1/locations', locationRoutes);
 app.use('/api/v1/devices', devicesRoutes);
 app.use('/api/v1/opening-hours', openingHoursRoutes);
+
+app.use('/api/v1/roles', roleRoutes);
 
 app.use('/api/v1/misc', miscRoutes);
 

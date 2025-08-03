@@ -1,145 +1,163 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient';
+import { checkPermissions } from '../utils/checkPermissions';
+import { Staff_Role_Permissions, UserPermissionType } from '@prisma/client';
+import { UnauthorizedError } from '../types/UnauthorizedError';
+import { ApiError } from '../types/Error';
 
-export const getRoles = async (request: Request, response: Response) => {
+const validateRolePermissions = (permissions: string[]) =>
+  permissions.every((permission: string) =>
+    Object.values(Staff_Role_Permissions).includes(
+      permission as Staff_Role_Permissions,
+    ),
+  );
+
+export const createRole = async (req: Request, res: Response) => {
   try {
-    const roles = await prisma.role.findMany({
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        permissions: true,
-        description: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-    response.status(200).json(roles);
-  } catch (error) {
-    console.error('Error fetching roles:', error);
-    response.status(500).json({ error: 'Error fetching roles' });
-  }
-};
+    const hasPermission = checkPermissions(
+      req.user,
+      UserPermissionType.MANAGEMENT_RIGHTS,
+    );
 
-export const createRole = async (request: Request, response: Response) => {
-  try {
-    const { name, description, permissions, type } = request.body;
+    if (!hasPermission) throw new UnauthorizedError();
 
-    const newRole = await prisma.role.create({
-      data: {
-        name,
-        type,
-        description,
-        permissions,
-      },
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        description: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const { name, description, permissions } = req.body;
 
-    response.status(201).json(newRole);
-  } catch (error) {
-    console.error('Error creating role:', error);
-    response.status(500).json({ error: 'Error creating role' });
-  }
-};
-
-export const getAllRoles = async (request: Request, response: Response) => {
-  try {
-    const roles = await prisma.role.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-      },
-    });
-
-    response.status(200).json(roles);
-  } catch (error) {
-    console.error('Error fetching roles:', error);
-    response.status(500).json({ error: 'Error fetching roles' });
-  }
-};
-
-export const getRoleById = async (request: Request, response: Response) => {
-  try {
-    const { id } = request.params;
-
-    const role = await prisma.role.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        permissions: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    if (!role) {
-      response.status(404).json({ error: 'Role not found' });
-      return;
+    if (permissions && !Array.isArray(permissions)) {
+      throw new ApiError({
+        message: 'Permissions must be an array',
+        statusCode: 400,
+      });
     }
 
-    response.status(200).json(role);
-  } catch (error) {
+    if (!validateRolePermissions(permissions)) {
+      throw new ApiError({
+        message: 'Invalid permissions provided',
+        statusCode: 400,
+      });
+    }
+
+    const role = await prisma.role.create({
+      data: { name, description, permissions },
+    });
+
+    res.status(201).json(role);
+  } catch (error: ApiError | any) {
+    console.error('Error creating role:', error);
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Failed to create role' });
+  }
+};
+
+export const getRoles = async (req: Request, res: Response) => {
+  try {
+    const hasPermission = checkPermissions(
+      req.user,
+      UserPermissionType.MANAGEMENT_RIGHTS,
+    );
+
+    if (!hasPermission) throw new UnauthorizedError();
+
+    const roles = await prisma.role.findMany();
+
+    res.status(200).json(roles);
+  } catch (error: ApiError | any) {
+    console.error('Error fetching roles:', error);
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Failed to fetch roles' });
+  }
+};
+
+export const getRoleById = async (req: Request, res: Response) => {
+  try {
+    const hasPermission = checkPermissions(
+      req.user,
+      UserPermissionType.MANAGEMENT_RIGHTS,
+    );
+
+    if (!hasPermission) throw new UnauthorizedError();
+
+    const { id } = req.params;
+
+    const role = await prisma.role.findUnique({ where: { id } });
+
+    if (!role) {
+      throw new ApiError({
+        message: `Role with ID ${id} not found`,
+        statusCode: 404,
+      });
+    }
+
+    res.status(200).json(role);
+  } catch (error: ApiError | any) {
     console.error('Error fetching role:', error);
-    response.status(500).json({ error: 'Error fetching role' });
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Failed to fetch role' });
   }
 };
 
-export const updateRole = async (request: Request, response: Response) => {
+export const updateRole = async (req: Request, res: Response) => {
   try {
-    const { id } = request.params;
-    const { name, description, permissions } = request.body;
+    const hasPermission = checkPermissions(
+      req.user,
+      UserPermissionType.MANAGEMENT_RIGHTS,
+    );
 
-    const updatedRole = await prisma.role.update({
+    if (!hasPermission) throw new UnauthorizedError();
+
+    const { id } = req.params;
+    const { name, description, permissions } = req.body;
+
+    const roleExists = await prisma.role.findUnique({ where: { id } });
+
+    if (!roleExists) {
+      throw new ApiError({
+        message: `Role with ID ${id} not found`,
+        statusCode: 404,
+      });
+    }
+
+    const role = await prisma.role.update({
       where: { id },
-      data: {
-        name,
-        description,
-        permissions,
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        permissions: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+      data: { name, description, permissions },
     });
-
-    response.status(200).json(updatedRole);
-  } catch (error) {
+    res.status(200).json(role);
+  } catch (error: ApiError | any) {
     console.error('Error updating role:', error);
-    response.status(500).json({ error: 'Error updating role' });
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Failed to update role' });
   }
 };
 
-export const deleteRole = async (request: Request, response: Response) => {
-  const { id } = request.params;
+export const deleteRole = async (req: Request, res: Response) => {
   try {
-    const deletedRole = await prisma.role.delete({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const hasPermission = checkPermissions(
+      req.user,
+      UserPermissionType.MANAGEMENT_RIGHTS,
+    );
 
-    response.status(200).json(deletedRole);
-  } catch (error) {
+    if (!hasPermission) throw new UnauthorizedError();
+
+    const { id } = req.params;
+    const roleExists = await prisma.role.findUnique({ where: { id } });
+
+    if (!roleExists) {
+      throw new ApiError({
+        message: `Role with ID ${id} not found`,
+        statusCode: 404,
+      });
+    }
+
+    await prisma.role.delete({ where: { id } });
+    res.status(200).json({ message: 'Role deleted successfully' });
+  } catch (error: ApiError | any) {
     console.error('Error deleting role:', error);
-    response.status(500).json({ error: 'Error deleting role' });
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Failed to delete role' });
   }
 };
