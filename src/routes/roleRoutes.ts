@@ -12,8 +12,8 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Roles
- *   description: The roles managing API
+ *   name: Staff Roles
+ *   description: Staff Role management endpoints
  */
 
 /**
@@ -21,7 +21,7 @@ const router = express.Router();
  * /roles:
  *   post:
  *     summary: Create a new role
- *     tags: [Roles]
+ *     tags: [Staff Roles]
  *     requestBody:
  *       required: true
  *       content:
@@ -45,7 +45,7 @@ router.post('/', createRole);
  * /roles:
  *   get:
  *     summary: Returns the list of all roles
- *     tags: [Roles]
+ *     tags: [Staff Roles]
  *     responses:
  *       200:
  *         description: The list of roles
@@ -63,7 +63,7 @@ router.get('/', getRoles);
  * /roles/{id}:
  *   get:
  *     summary: Get the role by id
- *     tags: [Roles]
+ *     tags: [Staff Roles]
  *     parameters:
  *       - in: path
  *         name: id
@@ -88,7 +88,7 @@ router.get('/:id', getRoleById);
  * /roles/{id}:
  *   patch:
  *     summary: Update the role by the id
- *     tags: [Roles]
+ *     tags: [Staff Roles]
  *     parameters:
  *       - in: path
  *         name: id
@@ -121,7 +121,7 @@ router.patch('/:id', updateRole);
  * /roles/{id}:
  *   delete:
  *     summary: Remove the role by id
- *     tags: [Roles]
+ *     tags: [Staff Roles]
  *     parameters:
  *       - in: path
  *         name: id

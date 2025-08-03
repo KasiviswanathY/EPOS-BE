@@ -4,10 +4,17 @@ import {
   getNoSaleReasons,
   getNoSaleReasonById,
   updateNoSaleReason,
-  deleteNoSaleReason
+  deleteNoSaleReason,
 } from '../controllers/noSaleReasonController';
 
 const router = Router();
+
+/**
+ * @openapi
+ * tags:
+ *   - name: NoSaleReason
+ *     description: No sale reason management endpoints
+ */
 
 /**
  * @openapi

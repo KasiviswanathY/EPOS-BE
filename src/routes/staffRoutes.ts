@@ -10,12 +10,40 @@ import {
 const router = Router();
 
 /**
+ * @swagger
+ * tags:
+ *   - name: Staff
+ *     description: Staff management endpoints
+ */
+
+/**
+ * @openapi
+ * /staff/create:
+ *   post:
+ *     summary: Create a new staff
+ *     tags: [Staff]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateStaff'
+ *     responses:
+ *       201:
+ *         description: Staff created successfully
+ *       400:
+ *         description: Invalid input
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/create', createStaff);
+
+/**
  * @openapi
  * /staff:
  *   get:
  *     summary: Get all staff (paginated)
- *     tags:
- *       - Staff
+ *     tags: [Staff]
  *     parameters:
  *       - in: query
  *         name: page
@@ -67,8 +95,7 @@ router.get('/', getStaff);
  * /staff/{id}:
  *   get:
  *     summary: Get staff by ID
- *     tags:
- *       - Staff
+ *     tags: [Staff]
  *     parameters:
  *       - in: path
  *         name: id
@@ -107,34 +134,10 @@ router.get('/:id', getStaffById);
 
 /**
  * @openapi
- * /staff/create:
- *   post:
- *     summary: Create a new staff
- *     tags:
- *       - Staff
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateStaff'
- *     responses:
- *       201:
- *         description: Staff created successfully
- *       400:
- *         description: Invalid input
- *       500:
- *         description: Internal Server Error
- */
-router.post('/create', createStaff);
-
-/**
- * @openapi
  * /staff/{id}:
  *   patch:
  *     summary: Update a staff
- *     tags:
- *       - Staff
+ *     tags: [Staff]
  *     parameters:
  *       - in: path
  *         name: id
@@ -184,8 +187,7 @@ router.patch('/:id', updateStaff);
  * /staff/{id}:
  *   delete:
  *     summary: Delete a staff
- *     tags:
- *       - Staff
+ *     tags: [Staff]
  *     parameters:
  *       - in: path
  *         name: id

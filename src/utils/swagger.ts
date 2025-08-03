@@ -31,6 +31,46 @@ const options: swaggerJsDoc.Options = {
         url: `${config.serverUrl}/api/v1`,
       },
     ],
+    tags: [
+      { name: 'Auth', description: 'Authentication endpoints' },
+      { name: 'Users', description: 'User management endpoints' },
+      { name: 'Companies', description: 'Company management endpoints' },
+      {
+        name: 'CompanyReceipt',
+        description: 'Company receipt management endpoints',
+      },
+      { name: 'Locations', description: 'Location management endpoints' },
+      { name: 'Staff', description: 'Staff management endpoints' },
+      { name: 'Staff Roles', description: 'Staff Role management endpoints' },
+      {
+        name: 'Clocking Types',
+        description: 'The clocking types managing API',
+      },
+
+      { name: 'Opening Hours', description: 'The opening hours managing API' },
+      { name: 'Devices', description: 'The devices managing API' },
+      {
+        name: 'DiscountReason',
+        description: 'Discount reason management endpoints',
+      },
+      {
+        name: 'NoSaleReason',
+        description: 'No sale reason management endpoints',
+      },
+
+      {
+        name: 'RefundReason',
+        description: 'Refund reason management endpoints',
+      },
+      {
+        name: 'StockMovementReason',
+        description: 'Stock movement reason management endpoints',
+      },
+      {
+        name: 'Customer Types',
+        description: 'The customer types managing API',
+      },
+    ],
   },
   apis: ['./src/routes/*.ts', './src/schemas/*.ts'],
 };

@@ -1,3 +1,9 @@
+/**
+ * @openapi
+ * tags:
+ *   - name: Miscellaneous
+ *     description: Miscellaneous endpoints
+ */
 import { Router } from 'express';
 
 const router = Router();

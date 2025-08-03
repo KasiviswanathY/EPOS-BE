@@ -1,3 +1,9 @@
+/**
+ * @openapi
+ * tags:
+ *   - name: CompanyReceipt
+ *     description: Company receipt management endpoints
+ */
 import { Router } from 'express';
 import {
   createCompanyReceipt,

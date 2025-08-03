@@ -53,8 +53,8 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Stock Movement Reasons
- *   description: The stock movement reasons managing API
+ *   - name: StockMovementReason
+ *     description: Stock movement reason management endpoints
  */
 
 /**
@@ -62,7 +62,7 @@ const router = express.Router();
  * /stock-movement-reasons:
  *   post:
  *     summary: Create a new stock movement reason
- *     tags: [Stock Movement Reasons]
+ *     tags: [StockMovementReason]
  *     requestBody:
  *       required: true
  *       content:
@@ -88,7 +88,7 @@ router.post('/', createStockMovementReason);
  * /stock-movement-reasons:
  *   get:
  *     summary: Returns the list of all stock movement reasons
- *     tags: [Stock Movement Reasons]
+ *     tags: [StockMovementReason]
  *     responses:
  *       200:
  *         description: The list of stock movement reasons
@@ -106,7 +106,7 @@ router.get('/', getAllStockMovementReasons);
  * /stock-movement-reasons/{id}:
  *   get:
  *     summary: Get the stock movement reason by id
- *     tags: [Stock Movement Reasons]
+ *     tags: [StockMovementReason]
  *     parameters:
  *       - in: path
  *         name: id
@@ -131,7 +131,7 @@ router.get('/:id', getStockMovementReasonById);
  * /stock-movement-reasons/{id}:
  *   put:
  *     summary: Update the stock movement reason by the id
- *     tags: [Stock Movement Reasons]
+ *     tags: [StockMovementReason]
  *     parameters:
  *       - in: path
  *         name: id
@@ -166,7 +166,7 @@ router.put('/:id', updateStockMovementReason);
  * /stock-movement-reasons/{id}:
  *   delete:
  *     summary: Remove the stock movement reason by id
- *     tags: [Stock Movement Reasons]
+ *     tags: [StockMovementReason]
  *     parameters:
  *       - in: path
  *         name: id

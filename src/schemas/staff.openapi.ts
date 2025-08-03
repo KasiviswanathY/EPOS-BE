@@ -1,5 +1,8 @@
 /**
  * @openapi
+ * tags:
+ *   - name: Staff
+ *     description: Staff management endpoints
  * components:
  *   schemas:
  *     Staff:

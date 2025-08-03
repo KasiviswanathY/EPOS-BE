@@ -12,8 +12,8 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Customer Types
- *   description: The customer types managing API
+ *   - name: Customer Types
+ *     description: The customer types managing API
  */
 
 /**
