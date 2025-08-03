@@ -13,20 +13,52 @@ const router = Router();
  * @openapi
  * /staff:
  *   get:
- *     summary: Get all staff
+ *     summary: Get all staff (paginated)
  *     tags:
  *       - Staff
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of staff
+ *         description: Paginated list of staff
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Staff'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Staff'
+ *                 page:
+ *                   type: integer
+ *                 pageSize:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal Server Error
  */
 router.get('/', getStaff);
 

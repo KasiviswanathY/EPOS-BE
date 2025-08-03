@@ -14,11 +14,27 @@ export const getStaff = async (req: Request, res: Response) => {
 
     if (!hasPermission) throw new UnauthorizedError();
 
-    const staff = await prisma.staff.findMany({
-      include: { role: true, mainLocation: true, StaffHours: true },
-    });
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
 
-    res.status(200).json(staff);
+    const [staff, total] = await Promise.all([
+      prisma.staff.findMany({
+        skip,
+        take,
+        include: { role: true, mainLocation: true, StaffHours: true },
+      }),
+      prisma.staff.count(),
+    ]);
+
+    res.status(200).json({
+      data: staff,
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    });
   } catch (error: ApiError | any) {
     console.error('Error fetching staff:', error);
     res
