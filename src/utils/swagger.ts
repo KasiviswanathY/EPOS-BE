@@ -43,6 +43,10 @@ const options: swaggerJsDoc.Options = {
       { name: 'Staff', description: 'Staff management endpoints' },
       { name: 'Staff Roles', description: 'Staff Role management endpoints' },
       {
+        name: 'Staff Hours',
+        description: 'Staff hours management endpoints',
+      },
+      {
         name: 'Clocking Types',
         description: 'The clocking types managing API',
       },

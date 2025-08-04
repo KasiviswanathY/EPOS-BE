@@ -63,7 +63,6 @@ model Staff {
 
 model StaffHours {
     id          String    @id @default(uuid())
-    staffId     String    @unique
     date        DateTime
     clockingIn  DateTime?
     clockingOut DateTime?
@@ -75,7 +74,8 @@ model StaffHours {
     location   Location @relation(fields: [locationId], references: [id])
     locationId String
 
-    staff Staff @relation(fields: [staffId], references: [id])
+    staff   Staff  @relation(fields: [staffId], references: [id])
+    staffId String @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

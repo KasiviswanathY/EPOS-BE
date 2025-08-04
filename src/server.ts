@@ -20,6 +20,7 @@ import stockMovementReasonRoutes from './routes/stockMovementReasonRoutes';
 import customerTypeRoutes from './routes/customerTypeRoutes';
 import staffRoutes from './routes/staffRoutes';
 import devicesRoutes from './routes/devicesRoutes';
+import staffHoursRoutes from './routes/staffHoursRoutes';
 
 import openingHoursRoutes from './routes/openingHoursRoutes';
 
@@ -75,6 +76,7 @@ app.use('/api/v1/opening-hours', openingHoursRoutes);
 
 app.use('/api/v1/staff', staffRoutes);
 app.use('/api/v1/roles', roleRoutes);
+app.use('/api/v1/staff-hours', staffHoursRoutes);
 
 app.use('/api/v1/misc', miscRoutes);
 
