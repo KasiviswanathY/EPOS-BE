@@ -21,6 +21,7 @@ import customerTypeRoutes from './routes/customerTypeRoutes';
 import staffRoutes from './routes/staffRoutes';
 import devicesRoutes from './routes/devicesRoutes';
 import staffHoursRoutes from './routes/staffHoursRoutes';
+import popupNoteRoutes from './routes/popupNoteRoutes';
 
 import openingHoursRoutes from './routes/openingHoursRoutes';
 
@@ -77,6 +78,9 @@ app.use('/api/v1/opening-hours', openingHoursRoutes);
 app.use('/api/v1/staff', staffRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/staff-hours', staffHoursRoutes);
+
+// Product related routes
+app.use('/api/v1/popup-notes', popupNoteRoutes);
 
 app.use('/api/v1/misc', miscRoutes);
 
