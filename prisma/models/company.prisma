@@ -74,9 +74,10 @@ model CustomerType {
     description String?
     discount    Float?  @default(0.0)
 
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    Customer  Customer[]
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    Customer   Customer[]
+    Promotions Promotions[]
 }
 
 model CompanyReceipt {

@@ -1,75 +1,221 @@
-model Category {
-    id          String  @id @default(uuid())
-    name        String  @unique
-    description String?
-    parentId    String?
+enum WetOrDry {
+    WET
+    DRY
+}
+
+enum UnitOfSale {
+    cards
+    each
+    kg
+    litre
+    packet
+    cl
+    cm
+    cup
+    ft
+    g
+    gal
+    halfPint
+    in
+    l
+    lb
+    ml
+    m
+    oz
+}
+
+enum PromotionDuration {
+    BETWEEN_DATES
+    BETWEEN_TIMES
+}
+
+enum PromotionType {
+    X_FOR_Y
+    X_FOR_DOLLAR
+    PERCENTAGE_DISCOUNT
+    SPEND_DOLLAR_SAVE_PERCENTAGE
+    SPEND_DOLLAR_SAVE_DOLLAR
+}
+
+enum DAYS_OF_WEEK {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+model PopupNote {
+    id                     String  @id @default(uuid())
+    name                   String
+    message                String
+    showOncePerTransaction Boolean @default(false)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    discount   Discount? @relation(fields: [discountId], references: [id])
-    discountId String?
+    category Category[]
+}
+
+model ProductTag {
+    id        String   @id @default(uuid())
+    name      String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    product Product[]
+}
+
+model Promotions {
+    id                      String            @id @default(uuid())
+    name                    String
+    description             String?
+    duration                PromotionDuration @default(BETWEEN_DATES)
+    fromDate                DateTime?
+    toDate                  DateTime?
+    timeFrom                DateTime?
+    timeTo                  DateTime?
+    mealDeal                Boolean           @default(false)
+    noOfMealDealGroups      Int?              @default(1)
+    type                    PromotionType
+    requiredQuantity        Float?            @default(1.0)
+    discountAmount          Float?            @default(0.0)
+    mixAndMatch             Boolean           @default(false)
+    usedWithOtherPromotions Boolean           @default(false)
+    enabled                 Boolean           @default(true)
+    daysEnabled             DAYS_OF_WEEK[]    @default([MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY])
+    customerType            CustomerType?     @relation(fields: [customerTypeId], references: [id])
+    customerTypeId          String?
+
+    productIds  Product[]
+    categoryIds Category[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Category {
+    id             String   @id @default(uuid())
+    name           String   @unique
+    description    String?
+    parentId       String?
+    reportCategory String?
+    wetOrDry       WetOrDry @default(WET)
+    showonTill     Boolean  @default(true)
+    nominalCode    String?  @unique
+
+    popupNote   PopupNote? @relation(fields: [popupNoteId], references: [id])
+    popupNoteId String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    product    Product[]
+    promotions Promotions[]
 }
 
 model Brand {
-    id          String   @id @default(uuid())
-    name        String   @unique
-    description String?
-    status      String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-}
+    id               String   @id @default(uuid())
+    name             String   @unique
+    description      String?
+    status           String
+    productOrderCode String?  @unique
+    articleCode      String?  @unique
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
 
-model Product {
-    id          String  @id @default(uuid())
-    name        String
-    description String?
-    costPrice   Float
-    salePrice   Float
-    unit        String
-    rating      Float?
-
-    warranty        Int?
-    manufacturer    String?
-    manufactureDate DateTime?
-    expiryDate      DateTime?
-
-    discount   Discount? @relation(fields: [discountId], references: [id])
-    discountId String?
-
-    BarCode           BarCode[]
-    // Purchase          PurchaseOrder[]
-    PurchaseOrderItem PurchaseOrderItem[]
-
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    PurchaseOrder PurchaseOrder[]
-}
-
-model Discount {
-    id          String   @id @default(uuid())
-    name        String
-    description String?
-    type        String
-    value       Float
-    startDate   DateTime
-    endDate     DateTime
-    status      String
-
-    product  Product[]
-    category Category[]
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    product Product[]
 }
 
 model BarCode {
-    id   String @id @map("barcodeId")
-    code String @unique
-
-    product   Product @relation(fields: [productId], references: [id])
-    productId String  @unique
-
+    id        String   @id @map("barcodeId")
+    code      String   @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    product Product[]
+}
+
+model TaxRate {
+    id         String   @id @default(uuid())
+    name       String   @unique
+    percentage Float
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    product Product[]
+}
+
+model ContainerFee {
+    id          String   @id @default(uuid())
+    name        String   @unique
+    description String?
+    fee         Float
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    product Product[]
+}
+
+model MulitChoiceProductGroup {
+    id          String   @id @default(uuid())
+    name        String   @unique
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    Product Product[]
+}
+
+model Product {
+    id                 String      @id @default(uuid())
+    name               String
+    description        String?
+    costPrice          Float
+    salePrice          Float
+    unit               String
+    rating             Float?
+    sellOnPos          Boolean     @default(true)
+    sellOnTill         Boolean     @default(true)
+    rrp                Float?
+    variablePrice      Boolean     @default(false)
+    taxExempt          Boolean     @default(false)
+    warranty           Int?
+    manufacturer       String?
+    manufactureDate    DateTime?
+    expiryDate         DateTime?
+    createdAt          DateTime    @default(now())
+    updatedAt          DateTime    @updatedAt
+    posOrder           String?     @unique
+    buttonColor        String?     @default("blue")
+    scannableOnly      Boolean     @default(false)
+    orderQuantityLimit Int         @default(100)
+    unitOfSale         UnitOfSale? @default(each)
+    volumeOfSale       Float?      @default(1.0)
+
+    taxRate   TaxRate? @relation(fields: [taxRateId], references: [id])
+    taxRateId String?
+
+    category   Category? @relation(fields: [categoryId], references: [id])
+    categoryId String?
+
+    brand   Brand?  @relation(fields: [brandId], references: [id])
+    brandId String?
+
+    barCode   BarCode? @relation(fields: [barCodeId], references: [id])
+    barCodeId String?
+
+    productTag   ProductTag? @relation(fields: [productTagId], references: [id])
+    productTagId String?
+
+    containerFee   ContainerFee? @relation(fields: [containerFeeId], references: [id])
+    containerFeeId String?
+
+    mulitChoiceProductGroup   MulitChoiceProductGroup? @relation(fields: [mulitChoiceProductGroupId], references: [id])
+    mulitChoiceProductGroupId String?
+
+    promotions        Promotions[]
+    purchaseOrderItem PurchaseOrderItem[]
 }
