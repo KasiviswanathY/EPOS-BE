@@ -58,11 +58,16 @@ app.use(authHandler);
 
 app.use('/api/v1/users', userRoutes);
 
+app.use('/api/v1/companies', companyRoutes);
+app.use('/api/v1/company-receipts', companyReceiptRoutes);
+app.use('/api/v1/locations', locationRoutes);
+app.use('/api/v1/staff', staffRoutes);
+app.use('/api/v1/roles', roleRoutes);
+
 app.use('/api/v1/products', productRoutes);
 
 // Company related routes
-app.use('/api/v1/companies', companyRoutes);
-app.use('/api/v1/company-receipts', companyReceiptRoutes);
+
 app.use('/api/v1/discount-reasons', discountReasonRoutes);
 app.use('/api/v1/refund-reasons', refundReasonRoutes);
 app.use('/api/v1/no-sale-reasons', noSaleReasonRoutes);
@@ -71,12 +76,11 @@ app.use('/api/v1/clocking-types', clockingTypeRoutes);
 app.use('/api/v1/customer-types', customerTypeRoutes);
 
 // Location related routes
-app.use('/api/v1/locations', locationRoutes);
+
 app.use('/api/v1/devices', devicesRoutes);
 app.use('/api/v1/opening-hours', openingHoursRoutes);
 
-app.use('/api/v1/staff', staffRoutes);
-app.use('/api/v1/roles', roleRoutes);
+// Staff related routes
 app.use('/api/v1/staff-hours', staffHoursRoutes);
 
 // Product related routes

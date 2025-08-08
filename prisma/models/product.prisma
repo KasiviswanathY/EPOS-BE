@@ -135,7 +135,7 @@ model BarCode {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    product Product[]
+    product Product?
 }
 
 model TaxRate {
@@ -175,7 +175,7 @@ model Product {
     description        String?
     costPrice          Float
     salePrice          Float
-    unit               String
+    unitOfSale         UnitOfSale? @default(each)
     rating             Float?
     sellOnPos          Boolean     @default(true)
     sellOnTill         Boolean     @default(true)
@@ -192,8 +192,8 @@ model Product {
     buttonColor        String?     @default("blue")
     scannableOnly      Boolean     @default(false)
     orderQuantityLimit Int         @default(100)
-    unitOfSale         UnitOfSale? @default(each)
-    volumeOfSale       Float?      @default(1.0)
+
+    volumeOfSale Float? @default(1.0)
 
     taxRate   TaxRate? @relation(fields: [taxRateId], references: [id])
     taxRateId String?
@@ -204,8 +204,8 @@ model Product {
     brand   Brand?  @relation(fields: [brandId], references: [id])
     brandId String?
 
-    barCode   BarCode? @relation(fields: [barCodeId], references: [id])
-    barCodeId String?
+    barCode   BarCode @relation(fields: [barCodeId], references: [id])
+    barCodeId String  @unique
 
     productTag   ProductTag? @relation(fields: [productTagId], references: [id])
     productTagId String?
