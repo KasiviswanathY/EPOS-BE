@@ -29,7 +29,6 @@ export const createLocation = async (req: Request, res: Response) => {
       language,
       timeZone,
       companyId,
-      staffId,
     } = req.body;
 
     if (!name) {
@@ -71,7 +70,6 @@ export const createLocation = async (req: Request, res: Response) => {
         language: language || 'en',
         timeZone: timeZone || 'UTC',
         companyId,
-        staffId,
       },
     });
 

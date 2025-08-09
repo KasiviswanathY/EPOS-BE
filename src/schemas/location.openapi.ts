@@ -7,7 +7,6 @@
  *       required:
  *         - name
  *         - companyId
- *         - staffId
  *       properties:
  *         id:
  *           type: string
@@ -37,8 +36,6 @@
  *           type: string
  *           default: UTC
  *         companyId:
- *           type: string
- *         staffId:
  *           type: string
  *         createdAt:
  *           type: string

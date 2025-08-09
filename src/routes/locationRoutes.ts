@@ -26,7 +26,6 @@ const router = Router();
  *             required:
  *               - name
  *               - companyId
- *               - staffId
  *             properties:
  *               name:
  *                 type: string
@@ -54,8 +53,6 @@ const router = Router();
  *                 type: string
  *                 default: UTC
  *               companyId:
- *                 type: string
- *               staffId:
  *                 type: string
  *     responses:
  *       201:
@@ -189,8 +186,6 @@ router.get('/company/:companyId', getLocationsByCompanyId);
  *               language:
  *                 type: string
  *               timeZone:
- *                 type: string
- *               staffId:
  *                 type: string
  *     responses:
  *       200:

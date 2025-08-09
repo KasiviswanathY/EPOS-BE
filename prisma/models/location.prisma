@@ -18,7 +18,6 @@ model Location {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    staffId      String
     Devices      Devices[]
     OpeningHours OpeningHours[]
     StaffHours   StaffHours[]

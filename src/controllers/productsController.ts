@@ -268,7 +268,6 @@ export const updateProduct = async (req: Request, res: Response) => {
       description,
       costPrice,
       salePrice,
-      unit,
       rating,
       sellOnPos,
       sellOnTill,
