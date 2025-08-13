@@ -1,28 +1,28 @@
 import { Router } from 'express';
 import {
-  getProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from '../controllers/productsController';
+  getBarCodes,
+  getBarCodeById,
+  createBarCode,
+  updateBarCode,
+  deleteBarCode,
+} from '../controllers/barCodeController';
 
 const router = Router();
 
 /**
  * @openapi
  * tags:
- *   - name: Products
- *     description: Product management endpoints
+ *   - name: BarCodes
+ *     description: Barcode management endpoints
  */
 
 /**
  * @openapi
- * /products:
+ * /barcodes:
  *   get:
- *     summary: Get all products with pagination
+ *     summary: Get all barcodes with pagination
  *     tags:
- *       - Products
+ *       - BarCodes
  *     parameters:
  *       - in: query
  *         name: page
@@ -38,7 +38,7 @@ const router = Router();
  *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of products
+ *         description: List of barcodes
  *         content:
  *           application/json:
  *             schema:
@@ -47,7 +47,7 @@ const router = Router();
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Product'
+ *                     $ref: '#/components/schemas/BarCode'
  *                 page:
  *                   type: integer
  *                 pageSize:
@@ -61,129 +61,131 @@ const router = Router();
  *       500:
  *         description: Internal Server Error
  */
-router.get('/', getProducts);
+router.get('/', getBarCodes);
 
 /**
  * @openapi
- * /products/{id}:
+ * /barcodes/{id}:
  *   get:
- *     summary: Get a product by ID
+ *     summary: Get a barcode by ID
  *     tags:
- *       - Products
+ *       - BarCodes
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Product ID
+ *         description: Barcode ID
  *     responses:
  *       200:
- *         description: Product details
+ *         description: Barcode details
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/BarCode'
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Product not found
+ *         description: Barcode not found
  *       500:
  *         description: Internal Server Error
  */
-router.get('/:id', getProductById);
+router.get('/:id', getBarCodeById);
 
 /**
  * @openapi
- * /products:
+ * /barcodes:
  *   post:
- *     summary: Create a new product
+ *     summary: Create a new barcode
  *     tags:
- *       - Products
+ *       - BarCodes
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateProduct'
+ *             $ref: '#/components/schemas/CreateBarCode'
  *     responses:
  *       201:
- *         description: Product created successfully
+ *         description: Barcode created successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/BarCode'
  *       400:
- *         description: Invalid input
+ *         description: Invalid input or barcode already exists
  *       401:
  *         description: Unauthorized
  *       500:
  *         description: Internal Server Error
  */
-router.post('/', createProduct);
+router.post('/', createBarCode);
 
 /**
  * @openapi
- * /products/{id}:
+ * /barcodes/{id}:
  *   patch:
- *     summary: Update a product
+ *     summary: Update a barcode
  *     tags:
- *       - Products
+ *       - BarCodes
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Product ID
+ *         description: Barcode ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UpdateProduct'
+ *             $ref: '#/components/schemas/UpdateBarCode'
  *     responses:
  *       200:
- *         description: Product updated successfully
+ *         description: Barcode updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/BarCode'
  *       400:
- *         description: Invalid input
+ *         description: Invalid input or barcode already exists
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Product not found
+ *         description: Barcode not found
  *       500:
  *         description: Internal Server Error
  */
-router.patch('/:id', updateProduct);
+router.patch('/:id', updateBarCode);
 
 /**
  * @openapi
- * /products/{id}:
+ * /barcodes/{id}:
  *   delete:
- *     summary: Delete a product
+ *     summary: Delete a barcode
  *     tags:
- *       - Products
+ *       - BarCodes
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Product ID
+ *         description: Barcode ID
  *     responses:
  *       200:
- *         description: Product deleted successfully
+ *         description: Barcode deleted successfully
+ *       400:
+ *         description: Cannot delete barcode associated with a product
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Product not found
+ *         description: Barcode not found
  *       500:
  *         description: Internal Server Error
  */
-router.delete('/:id', deleteProduct);
+router.delete('/:id', deleteBarCode);
 
 export default router;

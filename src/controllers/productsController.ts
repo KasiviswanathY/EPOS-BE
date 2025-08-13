@@ -30,7 +30,6 @@ export const getProducts = async (req: Request, res: Response) => {
           category: true,
           brand: true,
           taxRate: true,
-          barCode: true,
           productTag: true,
           containerFee: true,
           mulitChoiceProductGroup: true,
@@ -88,42 +87,6 @@ export const getProductById = async (req: Request, res: Response) => {
     console.error('Error fetching product:', error);
     res.status(error.statusCode || 500).json({
       error: error.message || 'Failed to fetch product',
-    });
-  }
-};
-
-export const getProductByBarCode = async (req: Request, res: Response) => {
-  try {
-    const hasPermission = checkPermissions(
-      req.user,
-      UserPermissionType.PRODUCT_RIGHTS,
-    );
-    if (!hasPermission) throw new UnauthorizedError();
-    const { barCode } = req.params;
-    const product = await prisma.product.findFirst({
-      where: {
-        barCode: {
-          code: barCode,
-        },
-      },
-      include: {
-        category: true,
-        brand: true,
-        taxRate: true,
-        barCode: true,
-        productTag: true,
-        containerFee: true,
-        mulitChoiceProductGroup: true,
-      },
-    });
-    if (!product) {
-      throw new ApiError({ message: 'Product not found', statusCode: 404 });
-    }
-    res.status(200).json(product);
-  } catch (error: ApiError | any) {
-    console.error('Error fetching product by barcode:', error);
-    res.status(error.statusCode || 500).json({
-      error: error.message || 'Failed to fetch product by barcode',
     });
   }
 };
@@ -228,7 +191,6 @@ export const createProduct = async (req: Request, res: Response) => {
         categoryId,
         brandId,
         taxRateId,
-        barCodeId,
         productTagId,
         containerFeeId,
         mulitChoiceProductGroupId,
@@ -355,7 +317,6 @@ export const updateProduct = async (req: Request, res: Response) => {
         categoryId,
         brandId,
         taxRateId,
-        barCodeId,
         productTagId,
         containerFeeId,
         mulitChoiceProductGroupId,

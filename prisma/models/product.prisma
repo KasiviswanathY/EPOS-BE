@@ -135,7 +135,8 @@ model BarCode {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    product Product?
+    product   Product @relation(fields: [productId], references: [id])
+    productId String
 }
 
 model TaxRate {
@@ -170,28 +171,29 @@ model MulitChoiceProductGroup {
 }
 
 model Product {
-    id                 String      @id @default(uuid())
-    name               String
-    description        String?
-    costPrice          Float
-    salePrice          Float
-    unitOfSale         UnitOfSale? @default(each)
-    rating             Float?
-    sellOnPos          Boolean     @default(true)
-    sellOnTill         Boolean     @default(true)
-    rrp                Float?
-    variablePrice      Boolean     @default(false)
-    taxExempt          Boolean     @default(false)
-    warranty           Int?
-    manufacturer       String?
-    manufactureDate    DateTime?
-    expiryDate         DateTime?
-    createdAt          DateTime    @default(now())
-    updatedAt          DateTime    @updatedAt
-    posOrder           String?     @unique
-    buttonColor        String?     @default("blue")
-    scannableOnly      Boolean     @default(false)
-    orderQuantityLimit Int         @default(100)
+    id              String      @id @default(uuid())
+    name            String
+    description     String?
+    costPrice       Float
+    salePrice       Float
+    manufactureDate DateTime?
+    expiryDate      DateTime?
+    unitOfSale      UnitOfSale? @default(each)
+    rating          Float?
+    sellOnPos       Boolean     @default(true)
+    sellOnTill      Boolean     @default(true)
+    rrp             Float?
+    variablePrice   Boolean     @default(false)
+    taxExempt       Boolean     @default(false)
+    warranty        Int?
+    manufacturer    String?
+
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
+    posOrder           String?  @unique
+    buttonColor        String?  @default("blue")
+    scannableOnly      Boolean  @default(false)
+    orderQuantityLimit Int      @default(100)
 
     volumeOfSale Float? @default(1.0)
 
@@ -204,9 +206,6 @@ model Product {
     brand   Brand?  @relation(fields: [brandId], references: [id])
     brandId String?
 
-    barCode   BarCode @relation(fields: [barCodeId], references: [id])
-    barCodeId String  @unique
-
     productTag   ProductTag? @relation(fields: [productTagId], references: [id])
     productTagId String?
 
@@ -218,4 +217,5 @@ model Product {
 
     promotions        Promotions[]
     purchaseOrderItem PurchaseOrderItem[]
+    barCode           BarCode[]
 }
