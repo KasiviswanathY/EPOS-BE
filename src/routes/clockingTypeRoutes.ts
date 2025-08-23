@@ -130,7 +130,7 @@ router.get('/:id', getClockingTypeById);
  *       500:
  *         description: Some error happened
  */
-router.put('/:id', updateClockingType);
+router.patch('/:id', updateClockingType);
 
 /**
  * @swagger
