@@ -95,7 +95,7 @@ router.get('/:id', getCompanyById);
  *       500:
  *         description: Internal Server Error
  */
-router.post('/create', createCompany);
+router.post('/', createCompany);
 
 /**
  * @openapi
