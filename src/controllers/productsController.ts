@@ -249,7 +249,6 @@ export const updateProduct = async (req: Request, res: Response) => {
       categoryId,
       brandId,
       taxRateId,
-      // barCodeId,
       productTagId,
       containerFeeId,
       mulitChoiceProductGroupId,

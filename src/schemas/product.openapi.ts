@@ -153,8 +153,6 @@
  *           type: string
  *         taxRateId:
  *           type: string
- *         barCodeId:
- *           type: string
  *         productTagId:
  *           type: string
  *         containerFeeId:
@@ -212,8 +210,6 @@
  *         brandId:
  *           type: string
  *         taxRateId:
- *           type: string
- *         barCodeId:
  *           type: string
  *         productTagId:
  *           type: string
