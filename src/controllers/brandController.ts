@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient';
 import { checkPermissions } from '../utils/checkPermissions';
-import { UserPermissionType } from '@prisma/client';
+import { UserPermissionType, Status } from '@prisma/client';
 import { UnauthorizedError } from '../types/UnauthorizedError';
 import { ApiError } from '../types/Error';
 
@@ -18,12 +18,18 @@ export const getBrands = async (req: Request, res: Response) => {
     const pageSize = parseInt(req.query.pageSize as string) || 10;
     const skip = (page - 1) * pageSize;
 
+    const statusFilter = req.query.status as string;
+    const validStatus =
+      statusFilter && Object.values(Status).includes(statusFilter as Status)
+        ? (statusFilter as Status)
+        : undefined;
+
     const [brands, total] = await Promise.all([
       prisma.brand.findMany({
         skip,
         take: pageSize,
         where: {
-          status: req.query.status ? (req.query.status as string) : undefined,
+          status: validStatus,
         },
         include: {
           product: {
@@ -39,7 +45,7 @@ export const getBrands = async (req: Request, res: Response) => {
       }),
       prisma.brand.count({
         where: {
-          status: req.query.status ? (req.query.status as string) : undefined,
+          status: validStatus,
         },
       }),
     ]);
