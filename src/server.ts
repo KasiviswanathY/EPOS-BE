@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 
 import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
+import categoryRoutes from './routes/categoryRoutes';
 import loginRoutes from './routes/loginRoutes';
 import miscRoutes from './routes/miscRoutes';
 import companyRoutes from './routes/companyRoutes';
@@ -66,6 +67,7 @@ app.use('/api/v1/staff', staffRoutes);
 app.use('/api/v1/roles', roleRoutes);
 
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
 // Company related routes
 
