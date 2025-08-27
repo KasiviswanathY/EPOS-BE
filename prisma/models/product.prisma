@@ -120,7 +120,7 @@ model Brand {
     id               String   @id @default(uuid())
     name             String   @unique
     description      String?
-    status           String
+    status           Status   @default(ACTIVE)
     productOrderCode String?  @unique
     articleCode      String?  @unique
     createdAt        DateTime @default(now())

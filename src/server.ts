@@ -8,6 +8,7 @@ import bodyParser from 'body-parser';
 import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import categoryRoutes from './routes/categoryRoutes';
+import brandRoutes from './routes/brandRoutes';
 import loginRoutes from './routes/loginRoutes';
 import miscRoutes from './routes/miscRoutes';
 import companyRoutes from './routes/companyRoutes';
@@ -68,6 +69,7 @@ app.use('/api/v1/roles', roleRoutes);
 
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/brands', brandRoutes);
 
 // Company related routes
 
