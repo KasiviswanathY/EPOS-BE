@@ -10,6 +10,7 @@ import productRoutes from './routes/productRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import brandRoutes from './routes/brandRoutes';
 import taxRateRoutes from './routes/taxRateRoutes';
+import orderRoutes from './routes/orderRoutes';
 import loginRoutes from './routes/loginRoutes';
 import miscRoutes from './routes/miscRoutes';
 import companyRoutes from './routes/companyRoutes';
@@ -72,6 +73,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/brands', brandRoutes);
 app.use('/api/v1/tax-rates', taxRateRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 // Company related routes
 

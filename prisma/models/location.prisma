@@ -22,6 +22,7 @@ model Location {
     OpeningHours OpeningHours[]
     StaffHours   StaffHours[]
     Customer     Customer[]
+    Order        Order[]
 
     Staff Staff[]
 }

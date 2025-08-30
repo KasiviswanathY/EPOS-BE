@@ -18,6 +18,8 @@ model Customer {
     signUpLocationId String
     status           Status   @default(ACTIVE)
 
+    orders Order[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

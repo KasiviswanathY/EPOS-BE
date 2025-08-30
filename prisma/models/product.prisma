@@ -91,6 +91,7 @@ model Promotions {
 
     productIds  Product[]
     categoryIds Category[]
+    orderItems  OrderItem[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -217,5 +218,6 @@ model Product {
 
     promotions        Promotions[]
     purchaseOrderItem PurchaseOrderItem[]
+    orderItems        OrderItem[]
     barCode           BarCode[]
 }
