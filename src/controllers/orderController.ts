@@ -1,9 +1,29 @@
 import { Request, Response } from 'express';
 import { prisma } from '../primsaClient';
 import { checkPermissions } from '../utils/checkPermissions';
-import { UserPermissionType, OrderStatus, PaymentStatus } from '@prisma/client';
+import {
+  UserPermissionType,
+  OrderStatus,
+  PaymentStatus,
+  StockMovementType,
+} from '@prisma/client';
 import { UnauthorizedError } from '../types/UnauthorizedError';
 import { ApiError } from '../types/Error';
+
+const orderProcessorInclude = {
+  processedByUser: {
+    select: {
+      id: true,
+      username: true,
+    },
+  },
+  processedByStaff: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+};
 
 export const getOrders = async (req: Request, res: Response) => {
   try {
@@ -63,12 +83,7 @@ export const getOrders = async (req: Request, res: Response) => {
               name: true,
             },
           },
-          processedBy: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
+          ...orderProcessorInclude,
           orderItems: {
             include: {
               product: {
@@ -143,12 +158,7 @@ export const getOrderById = async (req: Request, res: Response) => {
             address: true,
           },
         },
-        processedBy: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        ...orderProcessorInclude,
         orderItems: {
           include: {
             product: {
@@ -273,32 +283,97 @@ export const createOrder = async (req: Request, res: Response) => {
       });
     }
 
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        totalAmount,
-        subTotal,
-        taxAmount,
-        discountAmount,
-        finalAmount,
-        paymentMethod,
-        paymentStatus,
-        notes,
-        customerId,
-        locationId,
-        processedById,
-        orderItems: {
-          create: orderItems.map((item: any) => ({
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: item.totalPrice,
-            discountAmount: item.discountAmount || 0.0,
-            taxAmount: item.taxAmount || 0.0,
-            finalAmount: item.finalAmount,
-            productId: item.productId,
-          })),
+    const stockChecks = await Promise.all(
+      orderItems.map(async (item: any) => {
+        const stock = await prisma.stock.findUnique({
+          where: {
+            productId_locationId: {
+              productId: item.productId,
+              locationId: locationId,
+            },
+          },
+        });
+
+        if (!stock) {
+          throw new ApiError({
+            message: `No stock record found for product ${item.productId} at location ${locationId}`,
+            statusCode: 400,
+          });
+        }
+
+        if (stock.quantity < item.quantity) {
+          const product = products.find((p) => p.id === item.productId);
+          throw new ApiError({
+            message: `Insufficient stock for product "${product?.name}". Available: ${stock.quantity}, Requested: ${item.quantity}`,
+            statusCode: 400,
+          });
+        }
+
+        return { stock, item };
+      }),
+    );
+
+    const order = await prisma.$transaction(async (tx) => {
+      const newOrder = await tx.order.create({
+        data: {
+          orderNumber,
+          totalAmount,
+          subTotal,
+          taxAmount,
+          discountAmount,
+          finalAmount,
+          paymentMethod,
+          paymentStatus,
+          notes,
+          customerId,
+          locationId,
+          processedByStaffId: processedById,
+          orderItems: {
+            create: orderItems.map((item: any) => ({
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              totalPrice: item.totalPrice,
+              discountAmount: item.discountAmount || 0.0,
+              taxAmount: item.taxAmount || 0.0,
+              finalAmount: item.finalAmount,
+              productId: item.productId,
+            })),
+          },
         },
-      },
+      });
+
+      for (const { stock, item } of stockChecks) {
+        const newQuantity = stock.quantity - item.quantity;
+        const isLowStock =
+          stock.minStockLevel &&
+          stock.minStockLevel > 0 &&
+          newQuantity <= stock.minStockLevel;
+
+        await tx.stock.update({
+          where: { id: stock.id },
+          data: {
+            quantity: newQuantity,
+            isLowStock: isLowStock || false,
+            stockMovements: {
+              create: {
+                type: StockMovementType.SALE,
+                quantity: item.quantity,
+                previousQuantity: stock.quantity,
+                newQuantity: newQuantity,
+                reason: `Sale - Order ${orderNumber}`,
+                reference: orderNumber,
+                processedByUserId: req.user?.id || '',
+              },
+            },
+          },
+        });
+      }
+
+      return newOrder;
+    });
+
+    const completeOrder = await prisma.order.findUnique({
+      where: { id: order.id },
       include: {
         customer: {
           select: {
@@ -314,12 +389,7 @@ export const createOrder = async (req: Request, res: Response) => {
             name: true,
           },
         },
-        processedBy: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        ...orderProcessorInclude,
         orderItems: {
           include: {
             product: {
@@ -334,7 +404,7 @@ export const createOrder = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json(order);
+    res.status(201).json(completeOrder);
   } catch (error: ApiError | any) {
     console.error('Error creating order:', error);
     res.status(error.statusCode || 500).json({
@@ -370,6 +440,13 @@ export const updateOrder = async (req: Request, res: Response) => {
 
     const existingOrder = await prisma.order.findUnique({
       where: { id },
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
     if (!existingOrder) {
       throw new ApiError({ message: 'Order not found', statusCode: 404 });
@@ -392,13 +469,81 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
-    const order = await prisma.order.update({
-      where: { id },
-      data: {
-        ...(status !== undefined && { status }),
-        ...(paymentStatus !== undefined && { paymentStatus }),
-        ...(notes !== undefined && { notes }),
-      },
+    // Check if order is being cancelled and restore stock
+    const isCancelling =
+      status === OrderStatus.CANCELLED &&
+      existingOrder.status !== OrderStatus.CANCELLED;
+
+    let order;
+    if (isCancelling) {
+      // Use transaction to restore stock when cancelling
+      order = await prisma.$transaction(async (tx) => {
+        // Update the order
+        const updatedOrder = await tx.order.update({
+          where: { id },
+          data: {
+            ...(status !== undefined && { status }),
+            ...(paymentStatus !== undefined && { paymentStatus }),
+            ...(notes !== undefined && { notes }),
+          },
+        });
+
+        // Restore stock for each order item
+        for (const orderItem of existingOrder.orderItems) {
+          const stock = await tx.stock.findUnique({
+            where: {
+              productId_locationId: {
+                productId: orderItem.productId,
+                locationId: existingOrder.locationId,
+              },
+            },
+          });
+
+          if (stock) {
+            const newQuantity = stock.quantity + orderItem.quantity;
+            const isLowStock =
+              stock.minStockLevel &&
+              stock.minStockLevel > 0 &&
+              newQuantity <= stock.minStockLevel;
+
+            await tx.stock.update({
+              where: { id: stock.id },
+              data: {
+                quantity: newQuantity,
+                isLowStock: isLowStock || false,
+                stockMovements: {
+                  create: {
+                    type: StockMovementType.RETURN,
+                    quantity: orderItem.quantity,
+                    previousQuantity: stock.quantity,
+                    newQuantity: newQuantity,
+                    reason: `Order cancelled - ${existingOrder.orderNumber}`,
+                    reference: existingOrder.orderNumber,
+                    processedByUserId: req.user?.id || '',
+                  },
+                },
+              },
+            });
+          }
+        }
+
+        return updatedOrder;
+      });
+    } else {
+      // Regular update without stock changes
+      order = await prisma.order.update({
+        where: { id },
+        data: {
+          ...(status !== undefined && { status }),
+          ...(paymentStatus !== undefined && { paymentStatus }),
+          ...(notes !== undefined && { notes }),
+        },
+      });
+    }
+
+    // Fetch complete order with relations
+    const completeOrder = await prisma.order.findUnique({
+      where: { id: order.id },
       include: {
         customer: {
           select: {
@@ -414,12 +559,7 @@ export const updateOrder = async (req: Request, res: Response) => {
             name: true,
           },
         },
-        processedBy: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        ...orderProcessorInclude,
         orderItems: {
           include: {
             product: {
@@ -434,7 +574,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(order);
+    res.status(200).json(completeOrder);
   } catch (error: ApiError | any) {
     console.error('Error updating order:', error);
     res.status(error.statusCode || 500).json({
