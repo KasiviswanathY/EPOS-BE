@@ -219,5 +219,62 @@ model Product {
     promotions        Promotions[]
     purchaseOrderItem PurchaseOrderItem[]
     orderItems        OrderItem[]
+    stocks            Stock[]
     barCode           BarCode[]
+}
+
+enum StockMovementType {
+    INITIAL_STOCK
+    PURCHASE
+    SALE
+    ADJUSTMENT
+    RETURN
+    TRANSFER_IN
+    TRANSFER_OUT
+    DAMAGED
+    EXPIRED
+}
+
+model Stock {
+    id                String   @id @default(uuid())
+    quantity          Int      @default(0)
+    minStockLevel     Int?     @default(0)
+    maxStockLevel     Int?
+    reorderLevel      Int?     @default(0)
+    lastRestockDate   DateTime?
+    isLowStock        Boolean  @default(false)
+    
+    product           Product  @relation(fields: [productId], references: [id])
+    productId         String
+    
+    location          Location @relation(fields: [locationId], references: [id])
+    locationId        String
+    
+    stockMovements    StockMovement[]
+    
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+    
+    @@unique([productId, locationId])
+}
+
+model StockMovement {
+    id               String            @id @default(uuid())
+    type             StockMovementType
+    quantity         Int
+    previousQuantity Int
+    newQuantity      Int
+    reason           String?
+    reference        String?
+    
+    stock            Stock             @relation(fields: [stockId], references: [id])
+    stockId          String
+    
+    processedByStaff      Staff?       @relation(fields: [processedByStaffId], references: [id])
+    processedByStaffId    String?
+    
+    processedByUser       User?        @relation(fields: [processedByUserId], references: [id])
+    processedByUserId     String?
+    
+    createdAt        DateTime          @default(now())
 }

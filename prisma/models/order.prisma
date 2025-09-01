@@ -43,8 +43,11 @@ model Order {
     location   Location @relation(fields: [locationId], references: [id])
     locationId String
 
-    processedBy   Staff  @relation(fields: [processedById], references: [id])
-    processedById String
+    processedByStaff   Staff?  @relation(fields: [processedByStaffId], references: [id])
+    processedByStaffId String?
+
+    processedByUser   User?  @relation(fields: [processedByUserId], references: [id])
+    processedByUserId String?
 
     orderItems OrderItem[]
 

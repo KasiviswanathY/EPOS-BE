@@ -23,6 +23,7 @@ model Location {
     StaffHours   StaffHours[]
     Customer     Customer[]
     Order        Order[]
+    Stock        Stock[]
 
     Staff Staff[]
 }
