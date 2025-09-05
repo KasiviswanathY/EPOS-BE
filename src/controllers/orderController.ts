@@ -469,16 +469,13 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if order is being cancelled and restore stock
     const isCancelling =
       status === OrderStatus.CANCELLED &&
       existingOrder.status !== OrderStatus.CANCELLED;
 
     let order;
     if (isCancelling) {
-      // Use transaction to restore stock when cancelling
       order = await prisma.$transaction(async (tx) => {
-        // Update the order
         const updatedOrder = await tx.order.update({
           where: { id },
           data: {
@@ -488,7 +485,6 @@ export const updateOrder = async (req: Request, res: Response) => {
           },
         });
 
-        // Restore stock for each order item
         for (const orderItem of existingOrder.orderItems) {
           const stock = await tx.stock.findUnique({
             where: {
@@ -530,7 +526,6 @@ export const updateOrder = async (req: Request, res: Response) => {
         return updatedOrder;
       });
     } else {
-      // Regular update without stock changes
       order = await prisma.order.update({
         where: { id },
         data: {
@@ -541,7 +536,6 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
-    // Fetch complete order with relations
     const completeOrder = await prisma.order.findUnique({
       where: { id: order.id },
       include: {

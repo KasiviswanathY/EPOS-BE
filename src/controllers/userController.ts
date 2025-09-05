@@ -90,6 +90,26 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      throw new ApiError({
+        message: 'User not authenticated',
+        statusCode: 401,
+      });
+    }
+
+    const { password, ...userWithoutPassword } = req.user;
+
+    res.status(200).json(userWithoutPassword);
+  } catch (error: any) {
+    console.error('Error fetching current user:', error);
+    res
+      .status(error.statusCode || 500)
+      .json({ error: error.message || 'Failed to fetch user details' });
+  }
+};
+
 export const createUser = async (req: Request, res: Response) => {
   try {
     const checkUserPermissions = checkPermissions(
@@ -103,9 +123,9 @@ export const createUser = async (req: Request, res: Response) => {
 
     const { username, email, password, status, permissions } = req.body;
 
-    if (!username && !email) {
+    if (!username) {
       throw new ApiError({
-        message: 'Username or email are required',
+        message: 'Username is required',
         statusCode: 400,
       });
     }
@@ -176,6 +196,13 @@ export const updateUser = async (req: Request, res: Response) => {
 
     const { id } = req.params;
     const { username, email, password, status, permissions } = req.body;
+
+    if (username !== undefined && !username) {
+      throw new ApiError({
+        message: 'Username cannot be empty',
+        statusCode: 400,
+      });
+    }
 
     const user = await prisma.user.findUnique({
       where: { id },

@@ -42,6 +42,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const token = generateAccessToken(user.id);
 
     res.status(200).json({
+      message: 'Login successful',
       token,
     });
   } catch (error: ApiError | any) {

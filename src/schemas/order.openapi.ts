@@ -61,16 +61,24 @@
  *           type: string
  *           format: uuid
  *           description: Location where order was placed
- *         processedById:
+ *         processedByStaffId:
  *           type: string
  *           format: uuid
- *           description: Staff member who processed the order
+ *           nullable: true
+ *           description: Staff member who processed the order (optional)
+ *         processedByUserId:
+ *           type: string
+ *           format: uuid
+ *           nullable: true
+ *           description: User who processed the order (optional)
  *         customer:
  *           $ref: '#/components/schemas/Customer'
  *         location:
  *           $ref: '#/components/schemas/Location'
- *         processedBy:
+ *         processedByStaff:
  *           $ref: '#/components/schemas/Staff'
+ *         processedByUser:
+ *           $ref: '#/components/schemas/User'
  *         orderItems:
  *           type: array
  *           items:
@@ -142,7 +150,7 @@
  *         - finalAmount
  *         - paymentMethod
  *         - locationId
- *         - processedById
+ *         - processedByStaffId
  *         - orderItems
  *       properties:
  *         totalAmount:
@@ -176,9 +184,10 @@
  *         locationId:
  *           type: string
  *           format: uuid
- *         processedById:
+ *         processedByStaffId:
  *           type: string
  *           format: uuid
+ *           description: Staff member who processed the order
  *         orderItems:
  *           type: array
  *           items:
