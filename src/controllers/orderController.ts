@@ -214,7 +214,8 @@ export const createOrder = async (req: Request, res: Response) => {
       notes,
       customerId,
       locationId,
-      processedById,
+      processedByStaffId,
+      processedByUserId,
       orderItems,
     } = req.body;
 
@@ -225,14 +226,13 @@ export const createOrder = async (req: Request, res: Response) => {
       !finalAmount ||
       !paymentMethod ||
       !locationId ||
-      !processedById ||
       !orderItems ||
       !Array.isArray(orderItems) ||
       orderItems.length === 0
     ) {
       throw new ApiError({
         message:
-          'Required fields: totalAmount, subTotal, taxAmount, finalAmount, paymentMethod, locationId, processedById, and orderItems (non-empty array)',
+          'Required fields: totalAmount, subTotal, taxAmount, finalAmount, paymentMethod, locationId, and orderItems (non-empty array)',
         statusCode: 400,
       });
     }
@@ -249,14 +249,16 @@ export const createOrder = async (req: Request, res: Response) => {
       });
     }
 
-    const staff = await prisma.staff.findUnique({
-      where: { id: processedById },
-    });
-    if (!staff) {
-      throw new ApiError({
-        message: 'Staff member not found',
-        statusCode: 404,
+    if (processedByStaffId) {
+      const staff = await prisma.staff.findUnique({
+        where: { id: processedByStaffId },
       });
+      if (!staff) {
+        throw new ApiError({
+          message: 'Staff member not found',
+          statusCode: 404,
+        });
+      }
     }
 
     if (customerId) {
@@ -327,7 +329,8 @@ export const createOrder = async (req: Request, res: Response) => {
           notes,
           customerId,
           locationId,
-          processedByStaffId: processedById,
+          processedByStaffId,
+          processedByUserId,
           orderItems: {
             create: orderItems.map((item: any) => ({
               quantity: item.quantity,
@@ -335,7 +338,6 @@ export const createOrder = async (req: Request, res: Response) => {
               totalPrice: item.totalPrice,
               discountAmount: item.discountAmount || 0.0,
               taxAmount: item.taxAmount || 0.0,
-              finalAmount: item.finalAmount,
               productId: item.productId,
             })),
           },
@@ -363,6 +365,7 @@ export const createOrder = async (req: Request, res: Response) => {
                 reason: `Sale - Order ${orderNumber}`,
                 reference: orderNumber,
                 processedByUserId: req.user?.id || '',
+                processedByStaffId: processedByStaffId,
               },
             },
           },

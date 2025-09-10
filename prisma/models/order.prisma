@@ -46,7 +46,7 @@ model Order {
     processedByStaff   Staff?  @relation(fields: [processedByStaffId], references: [id])
     processedByStaffId String?
 
-    processedByUser   User?  @relation(fields: [processedByUserId], references: [id])
+    processedByUser   User?   @relation(fields: [processedByUserId], references: [id])
     processedByUserId String?
 
     orderItems OrderItem[]
@@ -62,7 +62,6 @@ model OrderItem {
     totalPrice     Float
     discountAmount Float  @default(0.0)
     taxAmount      Float  @default(0.0)
-    finalAmount    Float
 
     product   Product @relation(fields: [productId], references: [id])
     productId String
