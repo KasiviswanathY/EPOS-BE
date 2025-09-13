@@ -89,87 +89,6 @@
  *         updatedAt:
  *           type: string
  *           format: date-time
- *     OrderItem:
- *       type: object
- *       required:
- *         - id
- *         - quantity
- *         - unitPrice
- *         - totalPrice
- *         - productId
- *         - orderId
- *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           description: Unique identifier for the order item
- *         quantity:
- *           type: integer
- *           minimum: 1
- *           description: Quantity of the product
- *         unitPrice:
- *           type: number
- *           format: float
- *           description: Unit price of the product
- *         totalPrice:
- *           type: number
- *           format: float
- *           description: Total price (quantity * unitPrice)
- *         discountAmount:
- *           type: number
- *           format: float
- *           default: 0.0
- *           description: Discount amount applied to this item
- *         taxAmount:
- *           type: number
- *           format: float
- *           default: 0.0
- *           description: Tax amount for this item
- *         productId:
- *           type: string
- *           format: uuid
- *           description: ID of the associated product
- *         orderId:
- *           type: string
- *           format: uuid
- *           description: ID of the parent order
- *         product:
- *           $ref: '#/components/schemas/Product'
- *         order:
- *           $ref: '#/components/schemas/Order'
- *         promotions:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Promotion'
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: Final amount after discount and tax
- *         productId:
- *           type: string
- *           format: uuid
- *           description: Product ID
- *         orderId:
- *           type: string
- *           format: uuid
- *           description: Order ID
- *         product:
- *           $ref: '#/components/schemas/Product'
- *         order:
- *           $ref: '#/components/schemas/Order'
- *         promotions:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Promotions'
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
  *     CreateOrder:
  *       type: object
  *       required:
@@ -226,6 +145,83 @@
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/CreateOrderItem'
+ *     UpdateOrder:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [PENDING, CONFIRMED, PROCESSING, COMPLETED, CANCELLED, REFUNDED]
+ *         paymentStatus:
+ *           type: string
+ *           enum: [PENDING, PAID, PARTIAL, FAILED, REFUNDED]
+ *         notes:
+ *           type: string
+ *//**
+ * @openapi
+ * components:
+ *   schemas:
+ *     OrderItem:
+ *       type: object
+ *       required:
+ *         - id
+ *         - quantity
+ *         - unitPrice
+ *         - totalPrice
+ *         - productId
+ *         - orderId
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: Unique identifier for the order item
+ *         quantity:
+ *           type: integer
+ *           minimum: 1
+ *           description: Quantity of the product
+ *         unitPrice:
+ *           type: number
+ *           format: float
+ *           description: Unit price of the product
+ *         totalPrice:
+ *           type: number
+ *           format: float
+ *           description: Total price (quantity * unitPrice)
+ *         discountAmount:
+ *           type: number
+ *           format: float
+ *           default: 0.0
+ *           description: Discount amount applied to this item
+ *         taxAmount:
+ *           type: number
+ *           format: float
+ *           default: 0.0
+ *           description: Tax amount for this item
+ *         finalAmount:
+ *           type: number
+ *           format: float
+ *           description: Final amount after discount and tax
+ *         productId:
+ *           type: string
+ *           format: uuid
+ *           description: ID of the associated product
+ *         orderId:
+ *           type: string
+ *           format: uuid
+ *           description: ID of the parent order
+ *         product:
+ *           $ref: '#/components/schemas/Product'
+ *         order:
+ *           $ref: '#/components/schemas/Order'
+ *         promotions:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Promotion'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *     CreateOrderItem:
  *       type: object
  *       required:
@@ -256,30 +252,12 @@
  *           format: float
  *           default: 0.0
  *           description: Tax amount for this item
+ *         finalAmount:
+ *           type: number
+ *           format: float
+ *           description: Final amount after all calculations
  *         productId:
  *           type: string
  *           format: uuid
  *           description: ID of the product to order
- *           default: 0.0
- *         taxAmount:
- *           type: number
- *           format: float
- *           default: 0.0
- *         finalAmount:
- *           type: number
- *           format: float
- *         productId:
- *           type: string
- *           format: uuid
- *     UpdateOrder:
- *       type: object
- *       properties:
- *         status:
- *           type: string
- *           enum: [PENDING, CONFIRMED, PROCESSING, COMPLETED, CANCELLED, REFUNDED]
- *         paymentStatus:
- *           type: string
- *           enum: [PENDING, PAID, PARTIAL, FAILED, REFUNDED]
- *         notes:
- *           type: string
  */

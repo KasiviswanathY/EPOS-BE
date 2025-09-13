@@ -90,8 +90,7 @@
  *           type: string
  *           format: uuid
  *           nullable: true
- *           description: Staff member who processed the mov
- * ement (optional)
+ *           description: Staff member who processed the movement (optional)
  *         processedByUserId:
  *           type: string
  *           format: uuid
