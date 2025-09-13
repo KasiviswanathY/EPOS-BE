@@ -22,6 +22,7 @@ import refundReasonRoutes from './routes/refundReasonRoutes';
 import clockingTypeRoutes from './routes/clockingTypeRoutes';
 import noSaleReasonRoutes from './routes/noSaleReasonRoutes';
 import stockMovementReasonRoutes from './routes/stockMovementReasonRoutes';
+import stockMovementRoutes from './routes/stockMovementRoutes';
 import customerTypeRoutes from './routes/customerTypeRoutes';
 import staffRoutes from './routes/staffRoutes';
 import devicesRoutes from './routes/devicesRoutes';
@@ -83,6 +84,7 @@ app.use('/api/v1/discount-reasons', discountReasonRoutes);
 app.use('/api/v1/refund-reasons', refundReasonRoutes);
 app.use('/api/v1/no-sale-reasons', noSaleReasonRoutes);
 app.use('/api/v1/stock-movement-reasons', stockMovementReasonRoutes);
+app.use('/api/v1/stock-movements', stockMovementRoutes);
 app.use('/api/v1/clocking-types', clockingTypeRoutes);
 app.use('/api/v1/customer-types', customerTypeRoutes);
 
