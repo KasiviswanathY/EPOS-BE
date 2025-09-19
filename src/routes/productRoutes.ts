@@ -6,6 +6,8 @@ import {
   updateProduct,
   deleteProduct,
 } from '../controllers/productsController';
+import productImageRoutes from './productImageRoutes';
+import { uploadMultiple } from '../controllers/productImageController';
 
 const router = Router();
 
@@ -97,12 +99,75 @@ router.get('/:id', getProductById);
  * @openapi
  * /products:
  *   post:
- *     summary: Create a new product
+ *     summary: Create a new product with optional images
  *     tags:
  *       - Products
  *     requestBody:
  *       required: true
  *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - salePrice
+ *               - costPrice
+ *               - unitOfSale
+ *               - categoryId
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Product name (required)
+ *               description:
+ *                 type: string
+ *                 description: Product description
+ *               costPrice:
+ *                 type: number
+ *                 description: Cost price (required)
+ *               salePrice:
+ *                 type: number
+ *                 description: Sale price (required)
+ *               unitOfSale:
+ *                 type: string
+ *                 enum: [cards, each, kg, litre, packet, cl, cm, cup, ft, g, gal, halfPint, in, l, lb, ml, m, oz]
+ *                 description: Unit of sale (required)
+ *               categoryId:
+ *                 type: string
+ *                 description: Category ID (required)
+ *               brandId:
+ *                 type: string
+ *                 description: Brand ID
+ *               taxRateId:
+ *                 type: string
+ *                 description: Tax rate ID
+ *               productTagId:
+ *                 type: string
+ *                 description: Product tag ID
+ *               containerFeeId:
+ *                 type: string
+ *                 description: Container fee ID
+ *               mulitChoiceProductGroupId:
+ *                 type: string
+ *                 description: Multi-choice product group ID
+ *               posOrder:
+ *                 type: string
+ *                 description: Position order - must be unique across all products
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Product image files (up to 5 images, optional)
+ *               isPrimaryImage:
+ *                 type: array
+ *                 items:
+ *                   type: boolean
+ *                 description: Whether the corresponding image is a primary image (array index should match images array)
+ *               imageAltText:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Alternative text for each image (array index should match images array)
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateProduct'
@@ -120,13 +185,13 @@ router.get('/:id', getProductById);
  *       500:
  *         description: Internal Server Error
  */
-router.post('/', createProduct);
+router.post('/', uploadMultiple.array('images', 5), createProduct);
 
 /**
  * @openapi
  * /products/{id}:
  *   patch:
- *     summary: Update a product
+ *     summary: Update a product with optional images
  *     tags:
  *       - Products
  *     parameters:
@@ -139,6 +204,45 @@ router.post('/', createProduct);
  *     requestBody:
  *       required: true
  *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Product name
+ *               description:
+ *                 type: string
+ *                 description: Product description
+ *               costPrice:
+ *                 type: number
+ *                 description: Cost price
+ *               salePrice:
+ *                 type: number
+ *                 description: Sale price
+ *               unitOfSale:
+ *                 type: string
+ *                 enum: [cards, each, kg, litre, packet, cl, cm, cup, ft, g, gal, halfPint, in, l, lb, ml, m, oz]
+ *                 description: Unit of sale
+ *               posOrder:
+ *                 type: string
+ *                 description: Position order - must be unique across all products
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Product image files (up to 5 images, optional)
+ *               isPrimaryImage:
+ *                 type: array
+ *                 items:
+ *                   type: boolean
+ *                 description: Whether the corresponding image is a primary image (array index should match images array)
+ *               imageAltText:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Alternative text for each image (array index should match images array)
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/UpdateProduct'
@@ -158,7 +262,7 @@ router.post('/', createProduct);
  *       500:
  *         description: Internal Server Error
  */
-router.patch('/:id', updateProduct);
+router.patch('/:id', uploadMultiple.array('images', 5), updateProduct);
 
 /**
  * @openapi
@@ -185,5 +289,8 @@ router.patch('/:id', updateProduct);
  *         description: Internal Server Error
  */
 router.delete('/:id', deleteProduct);
+
+// Use product image routes
+router.use('/:productId/images', productImageRoutes);
 
 export default router;

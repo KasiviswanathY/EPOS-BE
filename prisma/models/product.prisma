@@ -221,6 +221,7 @@ model Product {
     orderItems        OrderItem[]
     stocks            Stock[]
     barCode           BarCode[]
+    images            ProductImage[]
 }
 
 enum StockMovementType {

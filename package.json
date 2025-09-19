@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.11.1",
+    "abort-controller": "^3.0.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "concurrently": "^9.2.0",
@@ -28,6 +29,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "prisma": "^6.11.1",
     "rimraf": "^6.0.1",
     "swagger-jsdoc": "^6.2.8",
@@ -42,6 +44,7 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
+    "@types/multer": "^1.4.11",
     "@types/node": "^24.0.10",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
