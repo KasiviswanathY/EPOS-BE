@@ -29,6 +29,7 @@ import devicesRoutes from './routes/devicesRoutes';
 import staffHoursRoutes from './routes/staffHoursRoutes';
 import popupNoteRoutes from './routes/popupNoteRoutes';
 import barCodeRoutes from './routes/barCodeRoutes';
+import productImageRoutes from './routes/productImageRoutes';
 
 import openingHoursRoutes from './routes/openingHoursRoutes';
 
@@ -98,6 +99,7 @@ app.use('/api/v1/staff-hours', staffHoursRoutes);
 
 // Product related routes
 app.use('/api/v1/barcodes', barCodeRoutes);
+app.use('/api/v1/products/:productId/images', productImageRoutes);
 app.use('/api/v1/popup-notes', popupNoteRoutes);
 
 app.use('/api/v1/misc', miscRoutes);

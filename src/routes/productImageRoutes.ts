@@ -1,4 +1,4 @@
-import express from 'express';
+import { Router } from 'express';
 import { 
   uploadProductImage, 
   getProductImages, 
@@ -7,9 +7,8 @@ import {
   deleteProductImage,
   upload
 } from '../controllers/productImageController';
-import { authHandler } from '../handlers/authHandler';
 
-const router = express.Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 /**
  * @openapi
@@ -43,10 +42,12 @@ const router = express.Router({ mergeParams: true });
  *                 $ref: '#/components/schemas/ProductImage'
  *       404:
  *         description: Product not found
+ *       401:
+ *         description: Unauthorized
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
  */
-router.get('/', authHandler, getProductImages);
+router.get('/', getProductImages);
 
 /**
  * @openapi
@@ -92,12 +93,14 @@ router.get('/', authHandler, getProductImages);
  *               $ref: '#/components/schemas/ProductImage'
  *       400:
  *         description: Invalid request
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Product not found
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
  */
-router.post('/', authHandler, upload.single('image'), uploadProductImage);
+router.post('/', upload.single('image'), uploadProductImage);
 
 /**
  * @openapi
@@ -137,7 +140,7 @@ router.get('/:imageId', getProductImage);
 /**
  * @openapi
  * /products/{productId}/images/{imageId}:
- *   put:
+ *   patch:
  *     summary: Update image metadata
  *     tags:
  *       - ProductImages
@@ -179,12 +182,14 @@ router.get('/:imageId', getProductImage);
  *               $ref: '#/components/schemas/ProductImage'
  *       400:
  *         description: Invalid request
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Image not found
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
  */
-router.put('/:imageId', authHandler, updateProductImage);
+router.patch('/:imageId', updateProductImage);
 
 /**
  * @openapi
@@ -209,11 +214,13 @@ router.put('/:imageId', authHandler, updateProductImage);
  *     responses:
  *       200:
  *         description: Image deleted successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Image not found
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
  */
-router.delete('/:imageId', authHandler, deleteProductImage);
+router.delete('/:imageId', deleteProductImage);
 
 export default router;
